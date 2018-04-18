@@ -33,7 +33,7 @@ EIpbReqStatus IpbWrite(IpbInst* ptInst, IpbMsg* mcbMsg, uint32_t u32Timeout)
 {
     EIpbReqStatus eResult = IPB_MESSAGE_ERROR;
     EIpbStatus eStatus;
-    size_t sz;
+    uint16_t u16Sz;
 
     if (ptInst->isCyclic == false)
     {
@@ -55,7 +55,7 @@ EIpbReqStatus IpbWrite(IpbInst* ptInst, IpbMsg* mcbMsg, uint32_t u32Timeout)
             /** No blocking mode */
             eStatus = ptInst->tIntf.Write(&ptInst->tIntf, &mcbMsg->u16Node,
                                         &mcbMsg->u16SubNode, &mcbMsg->u16Addr,
-                    &mcbMsg->u16Cmd, &mcbMsg->u16Data[0], &sz);
+                    &mcbMsg->u16Cmd, &mcbMsg->u16Data[0], &u16Sz);
         }
         if (eStatus == IPB_SUCCESS)
         {
