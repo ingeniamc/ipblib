@@ -9,7 +9,6 @@
 
 #include "ipb.h"
 #include <stdint.h>
-#include <stdio.h>
 #include <string.h>
 
 void IpbInit(IpbInst* ptInst, EIpbIntf eIntf, EIpbMode eMode)
