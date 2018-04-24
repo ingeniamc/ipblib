@@ -65,7 +65,7 @@ EIpbStatus Ipb_IntfReadUart(IpbIntf* ptInst, uint16_t* ptNode,
             if (Ipb_IntfUartReception(
                     (uint8_t*)&ptInst->Rxfrm,
                     ((IPB_FRM_HEAD_SZ + IPB_FRM_CONFIG_SZ + IPB_FRM_CRC_SZ)
-                     << SIZE_WORDS))
+                     * SIZE_WORDS))
                 != 0)
             {
                 bAbortFlag = false;
