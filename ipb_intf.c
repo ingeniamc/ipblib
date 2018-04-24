@@ -18,12 +18,13 @@
 static uint16_t bAbortFlag;
 
 static EIpbStatus
-Ipb_IntfReadUart(IpbIntf* ptInst, uint16_t* pu16Node, uint16_t* pu16SubNode, uint16_t* pu16Addr, uint16_t* pu16Cmd,
-        uint16_t* pu16Data);
+Ipb_IntfReadUart(IpbIntf* ptInst, uint16_t* pu16Node, uint16_t* pu16SubNode,
+                 uint16_t* pu16Addr, uint16_t* pu16Cmd, uint16_t* pu16Data);
 
 static EIpbStatus
-Ipb_IntfWriteUart(IpbIntf* ptInst, uint16_t* pu16Node, uint16_t* pu16SubNode, uint16_t* pu16Addr, uint16_t* pu16Cmd,
-        uint16_t* pu16Data, uint16_t* pu16Sz);
+Ipb_IntfWriteUart(IpbIntf* ptInst, uint16_t* pu16Node, uint16_t* pu16SubNode,
+                  uint16_t* pu16Addr, uint16_t* pu16Cmd, uint16_t* pu16Data,
+                  uint16_t* pu16Sz);
 
 void Ipb_IntfInit(IpbIntf* ptInst, EIpbIntf eIntf)
 {
@@ -161,28 +162,4 @@ EIpbStatus Ipb_IntfWriteUart(IpbIntf* ptInst, uint16_t* pu16Node, uint16_t* pu16
     }
 
     return ptInst->eState;
-}
-
-void TIM7_PeriodElapsedCallback(void)
-{
-    uint16_t u16PendingDMAFifoBytes = 0;
-    //__HAL_DMA_GET_COUNTER(huart2.hdmarx);
-
-    if (u16PendingDMAFifoBytes < IPB_FRAME_TOTAL_CFG_SIZE)
-    {
-        if (bAbortFlag)
-        {
-            //HAL_UART_Abort(&huart2);
-            //HAL_DMA_Abort(huart2.hdmarx);
-            bAbortFlag = false;
-        }
-        else
-        {
-            bAbortFlag = true;
-        }
-    }
-    else
-    {
-        bAbortFlag = false;
-    }
 }

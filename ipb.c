@@ -25,7 +25,7 @@ void Ipb_Deinit(IpbInst* ptInst)
     ptInst->eIntf = UART_BASED;
     ptInst->isCyclic = false;
     ptInst->eMode = IPB_BLOCKING;
-    IpbIntfDeinit(&ptInst->tIntf);
+    Ipb_IntfDeinit(&ptInst->tIntf);
 }
 
 EIpbReqStatus Ipb_Write(IpbInst* ptInst, IpbMsg* mcbMsg, uint32_t u32Timeout)
@@ -73,7 +73,6 @@ EIpbReqStatus Ipb_Write(IpbInst* ptInst, IpbMsg* mcbMsg, uint32_t u32Timeout)
     return eResult;
 }
 
-#include "stm32f4xx_hal.h"
 EIpbReqStatus Ipb_Read(IpbInst* ptInst, IpbMsg* mcbMsg, uint32_t u32Timeout)
 {
     EIpbReqStatus eResult = 0;
@@ -91,7 +90,6 @@ EIpbReqStatus Ipb_Read(IpbInst* ptInst, IpbMsg* mcbMsg, uint32_t u32Timeout)
                                            &mcbMsg->u16Addr, &mcbMsg->u16Cmd,
                                            &mcbMsg->u16Data[0]);
 
-                HAL_Delay(1);
             } while ((eStatus != IPB_ERROR) && (eStatus != IPB_SUCCESS)
                     && ((Ipb_GetMillis() - u32Millis) < u32Timeout));
 
@@ -101,8 +99,8 @@ EIpbReqStatus Ipb_Read(IpbInst* ptInst, IpbMsg* mcbMsg, uint32_t u32Timeout)
         {
             /** No blocking mode */
             eStatus = ptInst->tIntf.Read(&ptInst->tIntf, &mcbMsg->u16Node,
-                                       &mcbMsg->u16SubNode, &mcbMsg->u16Addr,
-                    &mcbMsg->u16Cmd, &mcbMsg->u16Data[0]);
+                                         &mcbMsg->u16SubNode, &mcbMsg->u16Addr,
+                                         &mcbMsg->u16Cmd, &mcbMsg->u16Data[0]);
         }
 
         if (eStatus == IPB_SUCCESS)
