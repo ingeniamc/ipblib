@@ -57,9 +57,9 @@ typedef struct
                                 IPB_FRM_CONFIG_SZ - IPB_FRM_CRC_SZ)
 
 uint16_t
-IpbFrameCRC(const TIpbFrame* tFrame);
+Ipb_FrameCRC(const TIpbFrame* tFrame);
 
-int32_t IpbFrameCreate(TIpbFrame* tFrame, uint16_t u16Node, uint16_t u16SubNode, uint16_t u16Addr, uint8_t u8Cmd,
+int32_t Ipb_FrameCreate(TIpbFrame* tFrame, uint16_t u16Node, uint16_t u16SubNode, uint16_t u16Addr, uint8_t u8Cmd,
         uint8_t u8Pending, const void* pConfigBuf, const void* pCyclicBuf, uint16_t u16CycliSz, bool calcCRC)
 {
     int32_t err = 0;
@@ -109,7 +109,7 @@ int32_t IpbFrameCreate(TIpbFrame* tFrame, uint16_t u16Node, uint16_t u16SubNode,
         {
             /* Compute CRC and add it to u16Buffer */
             tFrame->u16Buf[(IPB_FRM_HEAD_SZ + IPB_FRM_CONFIG_SZ) + u16CycliSz] =
-                        IpbFrameCRC(tFrame);
+                        Ipb_FrameCRC(tFrame);
             tFrame->u16Sz += IPB_FRM_CRC_SZ;
         }
         break;
@@ -118,7 +118,7 @@ int32_t IpbFrameCreate(TIpbFrame* tFrame, uint16_t u16Node, uint16_t u16SubNode,
     return err;
 }
 
-uint16_t IpbFrameGetNode(const TIpbFrame* tFrame)
+uint16_t Ipb_FrameGetNode(const TIpbFrame* tFrame)
 {
     THeader tHeader;
 
@@ -127,7 +127,7 @@ uint16_t IpbFrameGetNode(const TIpbFrame* tFrame)
     return (uint16_t) tHeader.NodeId.u12Node;
 }
 
-uint16_t IpbFrameGetSubNode(const TIpbFrame* tFrame)
+uint16_t Ipb_FrameGetSubNode(const TIpbFrame* tFrame)
 {
     THeader tHeader;
 
@@ -136,7 +136,7 @@ uint16_t IpbFrameGetSubNode(const TIpbFrame* tFrame)
     return (uint16_t) tHeader.NodeId.u4SubNode;
 }
 
-bool IpbFrameGetSegmented(const TIpbFrame* tFrame)
+bool Ipb_FrameGetSegmented(const TIpbFrame* tFrame)
 {
     THeader tHeader;
 
@@ -144,7 +144,7 @@ bool IpbFrameGetSegmented(const TIpbFrame* tFrame)
     return (bool) tHeader.Command.u1Pending;
 }
 
-uint16_t IpbFrameGetAddr(const TIpbFrame* tFrame)
+uint16_t Ipb_FrameGetAddr(const TIpbFrame* tFrame)
 {
     THeader tHeader;
 
@@ -153,7 +153,7 @@ uint16_t IpbFrameGetAddr(const TIpbFrame* tFrame)
     return (uint16_t) tHeader.Command.u12Addr;
 }
 
-uint8_t IpbFrameGetCmd(const TIpbFrame* tFrame)
+uint8_t Ipb_FrameGetCmd(const TIpbFrame* tFrame)
 {
     THeader tHeader;
 
@@ -162,17 +162,17 @@ uint8_t IpbFrameGetCmd(const TIpbFrame* tFrame)
     return (uint8_t) tHeader.Command.u3Cmd;
 }
 
-uint16_t IpbFrameGetConfigData(const TIpbFrame* tFrame, uint16_t* u16Buf)
+uint16_t Ipb_FrameGetConfigData(const TIpbFrame* tFrame, uint16_t* u16Buf)
 {
     memcpy(u16Buf, &tFrame->u16Buf[IPB_FRM_HEAD_SZ], (sizeof(tFrame->u16Buf[0]) * IPB_FRM_CONFIG_SZ));
     return IPB_FRM_CONFIG_SZ;
 }
 
-bool IpbFrameCheckCRC(const TIpbFrame* tFrame)
+bool Ipb_FrameCheckCRC(const TIpbFrame* tFrame)
 {
     bool bCRC = true;
 
-    if (IpbFrameCRC(tFrame) != 0)
+    if (Ipb_FrameCRC(tFrame) != 0)
     {
         bCRC = false;
     }
@@ -180,7 +180,7 @@ bool IpbFrameCheckCRC(const TIpbFrame* tFrame)
     return bCRC;
 }
 
-uint16_t IpbFrameCRC(const TIpbFrame* tFrame)
+uint16_t Ipb_FrameCRC(const TIpbFrame* tFrame)
 {
     uint16_t crc = CRC_START_XMODEM;
 

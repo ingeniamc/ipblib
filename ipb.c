@@ -11,16 +11,16 @@
 #include <stdint.h>
 #include <string.h>
 
-void IpbInit(IpbInst* ptInst, EIpbIntf eIntf, EIpbMode eMode)
+void Ipb_Init(IpbInst* ptInst, EIpbIntf eIntf, EIpbMode eMode)
 {
     ptInst->eIntf = eIntf;
     ptInst->isCyclic = false;
     ptInst->eMode = eMode;
 
-    IpbIntfInit(&ptInst->tIntf, eIntf);
+    Ipb_IntfInit(&ptInst->tIntf, eIntf);
 }
 
-void IpbDeinit(IpbInst* ptInst)
+void Ipb_Deinit(IpbInst* ptInst)
 {
     ptInst->eIntf = UART_BASED;
     ptInst->isCyclic = false;
@@ -28,7 +28,7 @@ void IpbDeinit(IpbInst* ptInst)
     IpbIntfDeinit(&ptInst->tIntf);
 }
 
-EIpbReqStatus IpbWrite(IpbInst* ptInst, IpbMsg* mcbMsg, uint32_t u32Timeout)
+EIpbReqStatus Ipb_Write(IpbInst* ptInst, IpbMsg* mcbMsg, uint32_t u32Timeout)
 {
     EIpbReqStatus eResult = IPB_MESSAGE_ERROR;
     EIpbStatus eStatus;
@@ -38,7 +38,7 @@ EIpbReqStatus IpbWrite(IpbInst* ptInst, IpbMsg* mcbMsg, uint32_t u32Timeout)
     {
         if (ptInst->eMode == IPB_BLOCKING)
         {
-            uint32_t u32Millis = HAL_GetTick();
+            uint32_t u32Millis = Ipb_GetMillis();
             do
             {
                 eStatus = ptInst->tIntf.Write(&ptInst->tIntf, &mcbMsg->u16Node,
@@ -47,7 +47,7 @@ EIpbReqStatus IpbWrite(IpbInst* ptInst, IpbMsg* mcbMsg, uint32_t u32Timeout)
                                             &mcbMsg->u16Data[0], &mcbMsg->u16Size);
 
             } while ((eStatus != IPB_ERROR) && (eStatus != IPB_SUCCESS)
-                    && ((HAL_GetTick() - u32Millis) < u32Timeout));
+                    && ((Ipb_GetMillis() - u32Millis) < u32Timeout));
         }
         else
         {
@@ -73,7 +73,8 @@ EIpbReqStatus IpbWrite(IpbInst* ptInst, IpbMsg* mcbMsg, uint32_t u32Timeout)
     return eResult;
 }
 
-EIpbReqStatus IpbRead(IpbInst* ptInst, IpbMsg* mcbMsg, uint32_t u32Timeout)
+#include "stm32f4xx_hal.h"
+EIpbReqStatus Ipb_Read(IpbInst* ptInst, IpbMsg* mcbMsg, uint32_t u32Timeout)
 {
     EIpbReqStatus eResult = 0;
     EIpbStatus eStatus = IPB_ERROR;
@@ -82,7 +83,7 @@ EIpbReqStatus IpbRead(IpbInst* ptInst, IpbMsg* mcbMsg, uint32_t u32Timeout)
     {
         if (ptInst->eMode == IPB_BLOCKING)
         {
-            uint32_t u32Millis = HAL_GetTick();
+            uint32_t u32Millis = Ipb_GetMillis();
             do
             {
                 eStatus = ptInst->tIntf.Read(&ptInst->tIntf, &mcbMsg->u16Node,
@@ -90,8 +91,10 @@ EIpbReqStatus IpbRead(IpbInst* ptInst, IpbMsg* mcbMsg, uint32_t u32Timeout)
                                            &mcbMsg->u16Addr, &mcbMsg->u16Cmd,
                                            &mcbMsg->u16Data[0]);
 
+                HAL_Delay(1);
             } while ((eStatus != IPB_ERROR) && (eStatus != IPB_SUCCESS)
-                    && ((HAL_GetTick() - u32Millis) < u32Timeout));
+                    && ((Ipb_GetMillis() - u32Millis) < u32Timeout));
+
             mcbMsg->u16Size = ptInst->tIntf.u16Sz;
         }
         else

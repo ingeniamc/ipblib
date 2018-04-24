@@ -68,8 +68,8 @@ typedef struct
 } IpbMsg;
 
 /** Initialization functions */
-void IpbInit(IpbInst* ptInst, EIpbIntf eIntf, EIpbMode eMode);
-void IpbDeinit(IpbInst* ptInst);
+void Ipb_Init(IpbInst* ptInst, EIpbIntf eIntf, EIpbMode eMode);
+void Ipb_Deinit(IpbInst* ptInst);
 
 /**
  * Generic write function
@@ -82,7 +82,7 @@ void IpbDeinit(IpbInst* ptInst);
  *  Timeout duration
  */
 EIpbReqStatus
-IpbWrite(IpbInst* ptInst, IpbMsg* mcbMsg, uint32_t u32Timeout);
+Ipb_Write(IpbInst* ptInst, IpbMsg* mcbMsg, uint32_t u32Timeout);
 
 /**
  * Generic read function
@@ -95,6 +95,6 @@ IpbWrite(IpbInst* ptInst, IpbMsg* mcbMsg, uint32_t u32Timeout);
  *  Timeout duration
  */
 EIpbReqStatus
-IpbRead(IpbInst* ptInst, IpbMsg* mcbMsg, uint32_t u32Timeout);
+Ipb_Read(IpbInst* ptInst, IpbMsg* mcbMsg, uint32_t u32Timeout);
 
 #endif /* IPB_H */
