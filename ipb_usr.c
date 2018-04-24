@@ -1,5 +1,5 @@
 /**
- * @file mcb_usr.c
+ * @file ipb_usr.c
  * @brief This file contains functions to be implemented by user to
  *        migrate platform dependencies
  *
