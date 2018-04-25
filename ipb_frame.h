@@ -88,7 +88,7 @@ typedef struct {
  * @return 0 success, error code otherwise
  */
 int32_t
-IpbFrameCreate(TIpbFrame* tFrame, uint16_t u16Node, uint16_t u16SubNode, uint16_t u16Addr, uint8_t u8Cmd,
+Ipb_FrameCreate(TIpbFrame* tFrame, uint16_t u16Node, uint16_t u16SubNode, uint16_t u16Addr, uint8_t u8Cmd,
         uint8_t u8Pending, const void* pConfigBuf, const void* pCyclicBuf, uint16_t u16CycliSz, bool calcCRC);
 
 /**
@@ -99,7 +99,7 @@ IpbFrameCreate(TIpbFrame* tFrame, uint16_t u16Node, uint16_t u16SubNode, uint16_
  * @return Node.
  */
 uint16_t
-IpbFrameGetNode(const TIpbFrame *tFrame);
+Ipb_FrameGetNode(const TIpbFrame *tFrame);
 
 /**
  * Returns the SubNode of the header.
@@ -109,7 +109,7 @@ IpbFrameGetNode(const TIpbFrame *tFrame);
  * @return SubNode.
  */
 uint16_t
-IpbFrameGetSubNode(const TIpbFrame *tFrame);
+Ipb_FrameGetSubNode(const TIpbFrame *tFrame);
 
 /**
  * Returns the address of the header.
@@ -119,7 +119,7 @@ IpbFrameGetSubNode(const TIpbFrame *tFrame);
  * @return Address.
  */
 uint16_t
-IpbFrameGetAddr(const TIpbFrame* tFrame);
+Ipb_FrameGetAddr(const TIpbFrame* tFrame);
 
 /**
  * Returns the command (request or reply) of the static data.
@@ -129,7 +129,7 @@ IpbFrameGetAddr(const TIpbFrame* tFrame);
  * @return Command.
  */
 uint8_t
-IpbFrameGetCmd(const TIpbFrame* tFrame);
+Ipb_FrameGetCmd(const TIpbFrame* tFrame);
 
 /**
  * Checks if the static data is segmented and requires further data.
@@ -139,7 +139,7 @@ IpbFrameGetCmd(const TIpbFrame* tFrame);
  * @return true if static data is segmented.
  */
 bool
-IpbFrameGetSegmented(const TIpbFrame* tFrame);
+Ipb_FrameGetSegmented(const TIpbFrame* tFrame);
 
 /**
  * Returns the static data of a frame.
@@ -149,7 +149,7 @@ IpbFrameGetSegmented(const TIpbFrame* tFrame);
  * @return Configtic data
  */
 uint16_t
-IpbFrameGetConfigData(const TIpbFrame* tFrame, uint16_t* buf);
+Ipb_FrameGetConfigData(const TIpbFrame* tFrame, uint16_t* buf);
 
 /**
  * Indicates if the crc for the input frame is correct
@@ -161,6 +161,6 @@ IpbFrameGetConfigData(const TIpbFrame* tFrame, uint16_t* buf);
  *         false if crc is wrong
  */
 bool
-IpbFrameCheckCRC(const TIpbFrame* tFrame);
+Ipb_FrameCheckCRC(const TIpbFrame* tFrame);
 
 #endif /* IPB_FRAME_H */

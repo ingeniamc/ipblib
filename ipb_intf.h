@@ -14,6 +14,7 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include "ipb_frame.h"
+#include "ipb_usr.h"
 
 /** Ipb communication states */
 typedef enum
@@ -83,9 +84,9 @@ struct IpbIntf
 
 /** Initialize a High speed protocol interface */
 void
-IpbIntfInit(IpbIntf* ptInst, EIpbIntf eIntf);
+Ipb_IntfInit(IpbIntf* ptInst, EIpbIntf eIntf);
 
 /** Deinitialize a high speed protocol interface */
 void
-IpbIntfDeinit(IpbIntf* ptInst);
+Ipb_IntfDeinit(IpbIntf* ptInst);
 #endif /* IPB_INTF_H */
