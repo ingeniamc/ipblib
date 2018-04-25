@@ -17,7 +17,7 @@ void Ipb_Init(IpbInst* ptInst, EIpbIntf eIntf, EIpbMode eMode)
     ptInst->isCyclic = false;
     ptInst->eMode = eMode;
 
-    Ipb_IntfInit(&ptInst->tIntf, eIntf);
+    Ipb_IntfInit(&ptInst->tIntf, eIntf, 0);
 }
 
 void Ipb_Deinit(IpbInst* ptInst)

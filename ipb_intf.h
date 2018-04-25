@@ -62,6 +62,8 @@ typedef struct IpbIntf IpbIntf;
 
 struct IpbIntf
 {
+    /** Identification of the uart module */
+    uint16_t u16Id;
     /** Indicates the state of the communication bus */
     EIpbStatus eState;
     /** Indicates the interface type */
@@ -84,7 +86,7 @@ struct IpbIntf
 
 /** Initialize a High speed protocol interface */
 void
-Ipb_IntfInit(IpbIntf* ptInst, EIpbIntf eIntf);
+Ipb_IntfInit(IpbIntf* ptInst, EIpbIntf eIntf, uint16_t u16Id);
 
 /** Deinitialize a high speed protocol interface */
 void

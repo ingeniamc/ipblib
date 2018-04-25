@@ -26,6 +26,8 @@ Ipb_GetMillis(void);
  *
  * @note Non Blocking function
  *
+ * @param[in] u16Id
+ *  Identification of the IPB instance
  * @param[in] pu8Buf
  *  Pointer to buffer to be recevied
  * @param[in] u16Size
@@ -34,13 +36,15 @@ Ipb_GetMillis(void);
  * @retval number of read bytes
  */
 uint16_t
-Ipb_IntfUartReception(uint8_t *pu8Buf, uint16_t u16Size);
+Ipb_IntfUartReception(uint16_t u16Id, uint8_t *pu8Buf, uint16_t u16Size);
 
 /**
  * UART transmission
  *
  * @note Non Blocking function
  *
+ * @param[in] u16Id
+ *  Identification of the IPB instance
  * @param[in] pu8Buf
  *  Pointer to buffer to be transmited
  * @param[in] u16Size
@@ -49,6 +53,6 @@ Ipb_IntfUartReception(uint8_t *pu8Buf, uint16_t u16Size);
  * @retval number of read bytes
  */
 uint16_t
-Ipb_IntfUartTransmission(const uint8_t *pu8Buf, uint16_t u16Size);
+Ipb_IntfUartTransmission(uint16_t u16Id, const uint8_t *pu8Buf, uint16_t u16Size);
 
 #endif /* IPB_USR_H */
