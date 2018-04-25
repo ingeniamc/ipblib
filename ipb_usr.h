@@ -26,7 +26,7 @@ Ipb_GetMillis(void);
  *
  * @note Non Blocking function
  *
- * @param[in] pu16Buf
+ * @param[in] pu8Buf
  *  Pointer to buffer to be recevied
  * @param[in] u16Size
  *  Size to receive bytes
@@ -41,7 +41,7 @@ Ipb_IntfUartReception(uint8_t *pu8Buf, uint16_t u16Size);
  *
  * @note Non Blocking function
  *
- * @param[in] pu16Buf
+ * @param[in] pu8Buf
  *  Pointer to buffer to be transmited
  * @param[in] u16Size
  *  Size to transmit bytes
