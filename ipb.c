@@ -105,11 +105,13 @@ EIpbReqStatus Ipb_Read(IpbInst* ptInst, IpbMsg* mcbMsg, uint32_t u32Timeout)
 
         if (eStatus == IPB_SUCCESS)
         {
-            eResult = IPB_MESSAGE_SUCCESS;
+        	eResult = IPB_MESSAGE_SUCCESS;
+        	mcbMsg->eStatus = IPB_MESSAGE_SUCCESS;
         }
         else
         {
             eResult = IPB_MESSAGE_ERROR;
+            mcbMsg->eStatus = IPB_MESSAGE_ERROR;
         }
     }
     else
