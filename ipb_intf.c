@@ -12,8 +12,6 @@
 #include <stdio.h>
 #include <string.h>
 
-#define SIZE_WORDS    2
-
 static uint16_t bAbortFlag;
 
 static EIpbStatus
@@ -62,7 +60,7 @@ EIpbStatus Ipb_IntfReadUart(IpbIntf* ptInst, uint16_t* ptNode, uint16_t* ptSubNo
         case IPB_READ_REQUEST:
             /** UART read */
             if (Ipb_IntfUartReception(ptInst->u16Id, (uint8_t*) &ptInst->Rxfrm,
-                    ((IPB_FRM_HEAD_SZ + IPB_FRM_CONFIG_SZ + IPB_FRM_CRC_SZ) * SIZE_WORDS)) != 0)
+                    ((IPB_FRM_HEAD_SZ + IPB_FRM_CONFIG_SZ + IPB_FRM_CRC_SZ) * sizeof(uint16_t))) != 0)
             {
                 bAbortFlag = false;
                 ptInst->Rxfrm.u16Sz = (IPB_FRM_HEAD_SZ + IPB_FRM_CONFIG_SZ + IPB_FRM_CRC_SZ);
@@ -96,9 +94,11 @@ EIpbStatus Ipb_IntfReadUart(IpbIntf* ptInst, uint16_t* ptNode, uint16_t* ptSubNo
             }
             break;
         case IPB_READ_REQUEST_ACK:
-            Ipb_FrameCreate(&(ptInst->Txfrm), 0, 0, 0, IPB_READ_REQUEST_ACK, IPB_FRM_NOTSEG, NULL, NULL, 0, true);
+            Ipb_FrameCreate(&(ptInst->Txfrm), *ptNode, *ptSubNode, *ptAddr, IPB_READ_REQUEST_ACK, IPB_FRM_NOTSEG, NULL, NULL, 0, true);
 
-            Ipb_IntfUartTransmission(ptInst->u16Id, (const uint8_t*) &(ptInst->Txfrm), (ptInst->u16Sz * SIZE_WORDS));
+			Ipb_IntfUartTransmission(ptInst->u16Id, (const uint8_t*) &(ptInst->Txfrm),
+									 ((IPB_FRM_HEAD_SZ + IPB_FRM_CONFIG_SZ + IPB_FRM_CRC_SZ)
+								     * sizeof(uint16_t)));
 
             if (Ipb_FrameGetSegmented(&ptInst->Rxfrm) == 0)
             {
@@ -139,7 +139,7 @@ EIpbStatus Ipb_IntfWriteUart(IpbIntf* ptInst, uint16_t* pu16Node, uint16_t* pu16
             }
 
             if (Ipb_IntfUartTransmission(ptInst->u16Id, (const uint8_t*) &(ptInst->Txfrm),
-                    (ptInst->u16Sz * SIZE_WORDS)) != false)
+                    (ptInst->u16Sz * sizeof(uint16_t))) != false)
             {
                 ptInst->eState = IPB_SUCCESS;
             }
