@@ -57,9 +57,9 @@ typedef struct
                                 IPB_FRM_CONFIG_SZ - IPB_FRM_CRC_SZ)
 
 uint16_t
-Ipb_FrameCRC(const TIpbFrame* tFrame);
+Ipb_FrameCRC(const Ipb_TFrame* tFrame);
 
-int32_t Ipb_FrameCreate(TIpbFrame* tFrame, uint16_t u16Node, uint16_t u16SubNode, uint16_t u16Addr, uint8_t u8Cmd,
+int32_t Ipb_FrameCreate(Ipb_TFrame* tFrame, uint16_t u16Node, uint16_t u16SubNode, uint16_t u16Addr, uint8_t u8Cmd,
         uint8_t u8Pending, const void* pConfigBuf, const void* pCyclicBuf, uint16_t u16CycliSz, bool calcCRC)
 {
     int32_t err = 0;
@@ -118,7 +118,7 @@ int32_t Ipb_FrameCreate(TIpbFrame* tFrame, uint16_t u16Node, uint16_t u16SubNode
     return err;
 }
 
-uint16_t Ipb_FrameGetNode(const TIpbFrame* tFrame)
+uint16_t Ipb_FrameGetNode(const Ipb_TFrame* tFrame)
 {
     THeader tHeader;
 
@@ -127,7 +127,7 @@ uint16_t Ipb_FrameGetNode(const TIpbFrame* tFrame)
     return (uint16_t) tHeader.NodeId.u12Node;
 }
 
-uint16_t Ipb_FrameGetSubNode(const TIpbFrame* tFrame)
+uint16_t Ipb_FrameGetSubNode(const Ipb_TFrame* tFrame)
 {
     THeader tHeader;
 
@@ -136,7 +136,7 @@ uint16_t Ipb_FrameGetSubNode(const TIpbFrame* tFrame)
     return (uint16_t) tHeader.NodeId.u4SubNode;
 }
 
-bool Ipb_FrameGetSegmented(const TIpbFrame* tFrame)
+bool Ipb_FrameGetSegmented(const Ipb_TFrame* tFrame)
 {
     THeader tHeader;
 
@@ -144,7 +144,7 @@ bool Ipb_FrameGetSegmented(const TIpbFrame* tFrame)
     return (bool) tHeader.Command.u1Pending;
 }
 
-uint16_t Ipb_FrameGetAddr(const TIpbFrame* tFrame)
+uint16_t Ipb_FrameGetAddr(const Ipb_TFrame* tFrame)
 {
     THeader tHeader;
 
@@ -153,7 +153,7 @@ uint16_t Ipb_FrameGetAddr(const TIpbFrame* tFrame)
     return (uint16_t) tHeader.Command.u12Addr;
 }
 
-uint8_t Ipb_FrameGetCmd(const TIpbFrame* tFrame)
+uint8_t Ipb_FrameGetCmd(const Ipb_TFrame* tFrame)
 {
     THeader tHeader;
 
@@ -162,13 +162,13 @@ uint8_t Ipb_FrameGetCmd(const TIpbFrame* tFrame)
     return (uint8_t) tHeader.Command.u3Cmd;
 }
 
-uint16_t Ipb_FrameGetConfigData(const TIpbFrame* tFrame, uint16_t* u16Buf)
+uint16_t Ipb_FrameGetConfigData(const Ipb_TFrame* tFrame, uint16_t* u16Buf)
 {
     memcpy(u16Buf, &tFrame->u16Buf[IPB_FRM_HEAD_SZ], (sizeof(tFrame->u16Buf[0]) * IPB_FRM_CONFIG_SZ));
     return IPB_FRM_CONFIG_SZ;
 }
 
-bool Ipb_FrameCheckCRC(const TIpbFrame* tFrame)
+bool Ipb_FrameCheckCRC(const Ipb_TFrame* tFrame)
 {
     bool bCRC = true;
 
@@ -180,15 +180,14 @@ bool Ipb_FrameCheckCRC(const TIpbFrame* tFrame)
     return bCRC;
 }
 
-uint16_t Ipb_FrameCRC(const TIpbFrame* tFrame)
+uint16_t Ipb_FrameCRC(const Ipb_TFrame* tFrame)
 {
     uint16_t crc = CRC_START_XMODEM;
+    uint8_t* pu8In = (uint8_t*) tFrame->u16Buf;
 
-    for (uint16_t i = 0; i < tFrame->u16Sz; i++)
+    for (uint16_t i = 0; i < (tFrame->u16Sz * 2); i++)
     {
-        /* TODO: Implement swap word and then just pointer */
-        crc = update_crc_ccitt(crc, (tFrame->u16Buf[i] >> 8) & 0xFF);
-        crc = update_crc_ccitt(crc, (tFrame->u16Buf[i] & 0xFF));
+        crc = update_crc_ccitt(crc, pu8In[i]);
     }
 
     return crc;

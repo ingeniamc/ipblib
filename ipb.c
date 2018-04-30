@@ -11,7 +11,7 @@
 #include <stdint.h>
 #include <string.h>
 
-void Ipb_Init(IpbInst* ptInst, EIpbIntf eIntf, EIpbMode eMode)
+void Ipb_Init(Ipb_TInst* ptInst, Ipb_EIntf eIntf, Ipb_EMode eMode)
 {
     ptInst->eIntf = eIntf;
     ptInst->isCyclic = false;
@@ -20,7 +20,7 @@ void Ipb_Init(IpbInst* ptInst, EIpbIntf eIntf, EIpbMode eMode)
     Ipb_IntfInit(&ptInst->tIntf, eIntf, 0);
 }
 
-void Ipb_Deinit(IpbInst* ptInst)
+void Ipb_Deinit(Ipb_TInst* ptInst)
 {
     ptInst->eIntf = UART_BASED;
     ptInst->isCyclic = false;
@@ -28,11 +28,10 @@ void Ipb_Deinit(IpbInst* ptInst)
     Ipb_IntfDeinit(&ptInst->tIntf);
 }
 
-EIpbReqStatus Ipb_Write(IpbInst* ptInst, IpbMsg* mcbMsg, uint32_t u32Timeout)
+Ipb_EStatus Ipb_Write(Ipb_TInst* ptInst, Ipb_TMsg* ptMsg, uint32_t u32Timeout)
 {
-    EIpbReqStatus eResult = IPB_MESSAGE_ERROR;
-    EIpbStatus eStatus;
     uint16_t u16Sz;
+    ptMsg->eStatus = IPB_ERROR;
 
     if (ptInst->isCyclic == false)
     {
@@ -41,28 +40,17 @@ EIpbReqStatus Ipb_Write(IpbInst* ptInst, IpbMsg* mcbMsg, uint32_t u32Timeout)
             uint32_t u32Millis = Ipb_GetMillis();
             do
             {
-                eStatus = ptInst->tIntf.Write(&ptInst->tIntf, &mcbMsg->u16Node,
-                                            &mcbMsg->u16SubNode,
-                                            &mcbMsg->u16Addr, &mcbMsg->u16Cmd,
-                                            &mcbMsg->u16Data[0], &mcbMsg->u16Size);
+                ptMsg->eStatus = ptInst->tIntf.Write(&ptInst->tIntf, &ptMsg->u16Node, &ptMsg->u16SubNode,
+                        &ptMsg->u16Addr, &ptMsg->u16Cmd, &ptMsg->u16Data[0], &ptMsg->u16Size);
 
-            } while ((eStatus != IPB_ERROR) && (eStatus != IPB_SUCCESS)
+            } while ((ptMsg->eStatus != IPB_ERROR) && (ptMsg->eStatus != IPB_SUCCESS)
                     && ((Ipb_GetMillis() - u32Millis) < u32Timeout));
         }
         else
         {
             /** No blocking mode */
-            eStatus = ptInst->tIntf.Write(&ptInst->tIntf, &mcbMsg->u16Node,
-                                        &mcbMsg->u16SubNode, &mcbMsg->u16Addr,
-                    &mcbMsg->u16Cmd, &mcbMsg->u16Data[0], &u16Sz);
-        }
-        if (eStatus == IPB_SUCCESS)
-        {
-            eResult = IPB_MESSAGE_SUCCESS;
-        }
-        else
-        {
-            eResult = IPB_MESSAGE_ERROR;
+            ptMsg->eStatus = ptInst->tIntf.Write(&ptInst->tIntf, &ptMsg->u16Node, &ptMsg->u16SubNode, &ptMsg->u16Addr,
+                    &ptMsg->u16Cmd, &ptMsg->u16Data[0], &u16Sz);
         }
     }
     else
@@ -70,13 +58,12 @@ EIpbReqStatus Ipb_Write(IpbInst* ptInst, IpbMsg* mcbMsg, uint32_t u32Timeout)
         /* Cyclic mode */
     }
 
-    return eResult;
+    return ptMsg->eStatus;
 }
 
-EIpbReqStatus Ipb_Read(IpbInst* ptInst, IpbMsg* mcbMsg, uint32_t u32Timeout)
+Ipb_EStatus Ipb_Read(Ipb_TInst* ptInst, Ipb_TMsg* ptMsg, uint32_t u32Timeout)
 {
-    EIpbReqStatus eResult = 0;
-    EIpbStatus eStatus = IPB_ERROR;
+    ptMsg->eStatus = IPB_ERROR;
 
     if (ptInst->isCyclic == false)
     {
@@ -85,33 +72,19 @@ EIpbReqStatus Ipb_Read(IpbInst* ptInst, IpbMsg* mcbMsg, uint32_t u32Timeout)
             uint32_t u32Millis = Ipb_GetMillis();
             do
             {
-                eStatus = ptInst->tIntf.Read(&ptInst->tIntf, &mcbMsg->u16Node,
-                                           &mcbMsg->u16SubNode,
-                                           &mcbMsg->u16Addr, &mcbMsg->u16Cmd,
-                                           &mcbMsg->u16Data[0]);
+                ptMsg->eStatus = ptInst->tIntf.Read(&ptInst->tIntf, &ptMsg->u16Node, &ptMsg->u16SubNode,
+                        &ptMsg->u16Addr, &ptMsg->u16Cmd, &ptMsg->u16Data[0]);
 
-            } while ((eStatus != IPB_ERROR) && (eStatus != IPB_SUCCESS)
+            } while ((ptMsg->eStatus != IPB_ERROR) && (ptMsg->eStatus != IPB_SUCCESS)
                     && ((Ipb_GetMillis() - u32Millis) < u32Timeout));
 
-            mcbMsg->u16Size = ptInst->tIntf.u16Sz;
+            ptMsg->u16Size = ptInst->tIntf.u16Sz;
         }
         else
         {
             /** No blocking mode */
-            eStatus = ptInst->tIntf.Read(&ptInst->tIntf, &mcbMsg->u16Node,
-                                         &mcbMsg->u16SubNode, &mcbMsg->u16Addr,
-                                         &mcbMsg->u16Cmd, &mcbMsg->u16Data[0]);
-        }
-
-        if (eStatus == IPB_SUCCESS)
-        {
-        	eResult = IPB_MESSAGE_SUCCESS;
-        	mcbMsg->eStatus = IPB_MESSAGE_SUCCESS;
-        }
-        else
-        {
-            eResult = IPB_MESSAGE_ERROR;
-            mcbMsg->eStatus = IPB_MESSAGE_ERROR;
+            ptMsg->eStatus = ptInst->tIntf.Read(&ptInst->tIntf, &ptMsg->u16Node, &ptMsg->u16SubNode, &ptMsg->u16Addr,
+                    &ptMsg->u16Cmd, &ptMsg->u16Data[0]);
         }
     }
     else
@@ -119,15 +92,6 @@ EIpbReqStatus Ipb_Read(IpbInst* ptInst, IpbMsg* mcbMsg, uint32_t u32Timeout)
         /* Cyclic mode */
     }
 
-    if (eStatus == IPB_SUCCESS)
-    {
-        eResult = IPB_MESSAGE_SUCCESS;
-    }
-    else
-    {
-        eResult = IPB_MESSAGE_ERROR;
-    }
-
-    return eResult;
+    return ptMsg->eStatus;
 }
 

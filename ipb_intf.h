@@ -25,27 +25,15 @@ typedef enum
     IPB_STANDBY,
     /** Sending a write request */
     IPB_WRITE_REQUEST,
-    /** Waiting for write request ack */
-    IPB_WRITE_REQUEST_ACK,
     /** Processing answer from write request */
     IPB_WRITE_ANSWER,
-    /** Processing write */
-    IPB_WRITE_ANSWER_PENDING,
     /** Sending a read request */
     IPB_READ_REQUEST,
-    /** Waiting for read request ack */
-    IPB_READ_REQUEST_ACK,
     /** Processing answer from read request */
     IPB_READ_ANSWER,
-    /** Processing request */
-    IPB_READ_REQUEST_PENDING,
-    /** Waiting and processing slave cyclic frame */
-    IPB_CYCLIC_ANSWER,
-    /** Cancel transaction */
-    IPB_CANCEL,
     /** Transaction error */
     IPB_ERROR
-} EIpbStatus;
+} Ipb_EStatus;
 
 /** Ipb interfaces options */
 typedef enum
@@ -56,39 +44,39 @@ typedef enum
     USB_BASED,
     /** Ethernet interface */
     ETHERNET_BASED
-} EIpbIntf;
+} Ipb_EIntf;
 
-typedef struct IpbIntf IpbIntf;
+typedef struct Ipb_TIntf Ipb_TIntf;
 
-struct IpbIntf
+struct Ipb_TIntf
 {
     /** Identification of the uart module */
     uint16_t u16Id;
     /** Indicates the state of the communication bus */
-    EIpbStatus eState;
+    Ipb_EStatus eState;
     /** Indicates the interface type */
-    EIpbIntf eIntf;
+    Ipb_EIntf eIntf;
     /** Frame pool for holding tx data */
-    TIpbFrame Txfrm;
+    Ipb_TFrame Txfrm;
     /** Frame pool for holding rx data */
-    TIpbFrame Rxfrm;
+    Ipb_TFrame Rxfrm;
     /** Pending data size to be transmitted/received */
     uint16_t u16Sz;
     /** Pending bits flag */
     bool ifPending;
     /** Write frame */
-    EIpbStatus (*Write)(IpbIntf* ptInst, uint16_t* pu16Node, uint16_t* pu16SubNode, uint16_t* pu16Addr,
+    Ipb_EStatus (*Write)(Ipb_TIntf* ptInst, uint16_t* pu16Node, uint16_t* pu16SubNode, uint16_t* pu16Addr,
             uint16_t* pu16Cmd, uint16_t* pu16Data, uint16_t* pu16Sz);
     /** Read frame */
-    EIpbStatus (*Read)(IpbIntf* ptInst, uint16_t* pu16Node, uint16_t* pu16SubNode, uint16_t* pu16Addr,
+    Ipb_EStatus (*Read)(Ipb_TIntf* ptInst, uint16_t* pu16Node, uint16_t* pu16SubNode, uint16_t* pu16Addr,
             uint16_t* pu16Cmd, uint16_t* pu16Data);
 };
 
 /** Initialize a High speed protocol interface */
 void
-Ipb_IntfInit(IpbIntf* ptInst, EIpbIntf eIntf, uint16_t u16Id);
+Ipb_IntfInit(Ipb_TIntf* ptInst, Ipb_EIntf eIntf, uint16_t u16Id);
 
 /** Deinitialize a high speed protocol interface */
 void
-Ipb_IntfDeinit(IpbIntf* ptInst);
+Ipb_IntfDeinit(Ipb_TIntf* ptInst);
 #endif /* IPB_INTF_H */

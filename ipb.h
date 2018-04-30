@@ -13,9 +13,9 @@
 #include <stdint.h>
 #include "ipb_intf.h"
 
-#define HSP_MAX_DATA_SZ 128
+#define IPB_MAX_DATA_SZ 128
 
-#define DFLT_TIMEOUT 100
+#define IPB_DFLT_TIMEOUT 500
 
 typedef enum
 {
@@ -23,30 +23,20 @@ typedef enum
     IPB_BLOCKING = 0,
     /* Non Blocking mode, if not ready, return state */
     IPB_NON_BLOCKING
-} EIpbMode;
-
-typedef enum
-{
-    /* Message not ready */
-    IPB_MESSAGE_NOT_READY = 0,
-    /* Success request */
-    IPB_MESSAGE_SUCCESS,
-    /* Request error */
-    IPB_MESSAGE_ERROR
-} EIpbReqStatus;
+} Ipb_EMode;
 
 /** Motion control but instance */
 typedef struct
 {
     /** Specific interface */
-    EIpbIntf eIntf;
+    Ipb_EIntf eIntf;
     /** Indicates if mcb is cyclic */
     bool isCyclic;
     /** Linked interface module */
-    IpbIntf tIntf;
+    Ipb_TIntf tIntf;
     /** Transmission mode */
-    EIpbMode eMode;
-} IpbInst;
+    Ipb_EMode eMode;
+} Ipb_TInst;
 
 /** Frame data struct */
 typedef struct
@@ -62,14 +52,14 @@ typedef struct
     /* Message total size (bytes) */
     uint16_t u16Size;
     /* Static data */
-    uint16_t u16Data[HSP_MAX_DATA_SZ];
+    uint16_t u16Data[IPB_MAX_DATA_SZ];
     /* Message status */
-    EIpbReqStatus eStatus;
-} IpbMsg;
+    Ipb_EStatus eStatus;
+} Ipb_TMsg;
 
 /** Initialization functions */
-void Ipb_Init(IpbInst* ptInst, EIpbIntf eIntf, EIpbMode eMode);
-void Ipb_Deinit(IpbInst* ptInst);
+void Ipb_Init(Ipb_TInst* ptInst, Ipb_EIntf eIntf, Ipb_EMode eMode);
+void Ipb_Deinit(Ipb_TInst* ptInst);
 
 /**
  * Generic write function
@@ -81,8 +71,8 @@ void Ipb_Deinit(IpbInst* ptInst);
  * @param[in] u32Timeout
  *  Timeout duration
  */
-EIpbReqStatus
-Ipb_Write(IpbInst* ptInst, IpbMsg* mcbMsg, uint32_t u32Timeout);
+Ipb_EStatus
+Ipb_Write(Ipb_TInst* ptInst, Ipb_TMsg* ptMsg, uint32_t u32Timeout);
 
 /**
  * Generic read function
@@ -94,7 +84,7 @@ Ipb_Write(IpbInst* ptInst, IpbMsg* mcbMsg, uint32_t u32Timeout);
  * @param[in] u32Timeout
  *  Timeout duration
  */
-EIpbReqStatus
-Ipb_Read(IpbInst* ptInst, IpbMsg* mcbMsg, uint32_t u32Timeout);
+Ipb_EStatus
+Ipb_Read(Ipb_TInst* ptInst, Ipb_TMsg* ptMsg, uint32_t u32Timeout);
 
 #endif /* IPB_H */
