@@ -138,7 +138,7 @@ Ipb_EStatus Ipb_IntfWriteUart(Ipb_TIntf* ptInst, uint16_t* pu16Node, uint16_t* p
             }
 
             if (Ipb_IntfUartTransmission(ptInst->u16Id, (const uint8_t*) &(ptInst->Txfrm),
-                    (ptInst->u16Sz * sizeof(uint16_t))) != false)
+                    (ptInst->Txfrm.u16Sz * sizeof(uint16_t))) != false)
             {
                 ptInst->eState = IPB_ERROR;
             }
