@@ -57,7 +57,7 @@ typedef struct
                                 IPB_FRM_CONFIG_SZ - IPB_FRM_CRC_SZ)
 
 uint16_t
-Ipb_FrameCRC(const Ipb_TFrame* tFrame);
+Ipb_FrameCRC(const Ipb_TFrame* tFrame, uint16_t u16Sz);
 
 int32_t Ipb_FrameCreate(Ipb_TFrame* tFrame, uint16_t u16Node, uint16_t u16SubNode, uint16_t u16Addr, uint8_t u8Cmd,
         uint8_t u8Pending, const void* pConfigBuf, const void* pCyclicBuf, uint16_t u16CycliSz, bool calcCRC)
@@ -109,7 +109,7 @@ int32_t Ipb_FrameCreate(Ipb_TFrame* tFrame, uint16_t u16Node, uint16_t u16SubNod
         {
             /* Compute CRC and add it to u16Buffer */
             tFrame->u16Buf[(IPB_FRM_HEAD_SZ + IPB_FRM_CONFIG_SZ) + u16CycliSz] =
-                        Ipb_FrameCRC(tFrame);
+                        Ipb_FrameCRC(tFrame, tFrame->u16Sz);
             tFrame->u16Sz += IPB_FRM_CRC_SZ;
         }
         break;
@@ -170,22 +170,17 @@ uint16_t Ipb_FrameGetConfigData(const Ipb_TFrame* tFrame, uint16_t* u16Buf)
 
 bool Ipb_FrameCheckCRC(const Ipb_TFrame* tFrame)
 {
-    bool bCRC = true;
-
-    if (Ipb_FrameCRC(tFrame) != 0)
-    {
-        bCRC = false;
-    }
-
-    return bCRC;
+	uint16_t u16CalcCRC = Ipb_FrameCRC(tFrame, tFrame->u16Sz - IPB_FRM_CRC_SZ);
+	uint16_t u16CRCInx = tFrame->u16Sz - IPB_FRM_CRC_SZ;
+    return (u16CalcCRC == tFrame->u16Buf[u16CRCInx]);
 }
 
-uint16_t Ipb_FrameCRC(const Ipb_TFrame* tFrame)
+uint16_t Ipb_FrameCRC(const Ipb_TFrame* tFrame, uint16_t u16Sz)
 {
     uint16_t crc = CRC_START_XMODEM;
     uint8_t* pu8In = (uint8_t*) tFrame->u16Buf;
 
-    for (uint16_t i = 0; i < (tFrame->u16Sz * 2); i++)
+    for (uint16_t i = 0; i < (u16Sz * 2); i++)
     {
         crc = update_crc_ccitt(crc, pu8In[i]);
     }
