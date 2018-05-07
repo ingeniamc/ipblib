@@ -170,9 +170,16 @@ uint16_t Ipb_FrameGetConfigData(const Ipb_TFrame* tFrame, uint16_t* u16Buf)
 
 bool Ipb_FrameCheckCRC(const Ipb_TFrame* tFrame)
 {
-	uint16_t u16CalcCRC = Ipb_FrameCRC(tFrame, tFrame->u16Sz - IPB_FRM_CRC_SZ);
+    bool bRet = true;
 	uint16_t u16CRCInx = tFrame->u16Sz - IPB_FRM_CRC_SZ;
-    return (u16CalcCRC == tFrame->u16Buf[u16CRCInx]);
+    uint16_t u16CalcCRC = Ipb_FrameCRC(tFrame, u16CRCInx << 1);
+
+    if (u16CalcCRC != tFrame->u16Buf[u16CRCInx])
+    {
+        bRet = false;
+    }
+
+    return bRet;
 }
 
 uint16_t Ipb_FrameCRC(const Ipb_TFrame* tFrame, uint16_t u16Sz)
@@ -180,9 +187,9 @@ uint16_t Ipb_FrameCRC(const Ipb_TFrame* tFrame, uint16_t u16Sz)
     uint16_t crc = CRC_START_XMODEM;
     uint8_t* pu8In = (uint8_t*) tFrame->u16Buf;
 
-    for (uint16_t i = 0; i < (u16Sz * 2); i++)
+    for (uint16_t u16Idx = 0; u16Idx < u16Sz; u16Idx++)
     {
-        crc = update_crc_ccitt(crc, pu8In[i]);
+        crc = update_crc_ccitt(crc, pu8In[u16Idx]);
     }
 
     return crc;
