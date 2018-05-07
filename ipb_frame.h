@@ -58,7 +58,7 @@ typedef struct {
     uint16_t u16Buf[IPB_FRM_MAX_DATA_SZ];
     /** Frame size */
     uint16_t u16Sz;
-} TIpbFrame;
+} Ipb_TFrame;
 
 /**
  * Initialises an Ingenia High Speed Protocol frame.
@@ -88,7 +88,7 @@ typedef struct {
  * @return 0 success, error code otherwise
  */
 int32_t
-Ipb_FrameCreate(TIpbFrame* tFrame, uint16_t u16Node, uint16_t u16SubNode, uint16_t u16Addr, uint8_t u8Cmd,
+Ipb_FrameCreate(Ipb_TFrame* tFrame, uint16_t u16Node, uint16_t u16SubNode, uint16_t u16Addr, uint8_t u8Cmd,
         uint8_t u8Pending, const void* pConfigBuf, const void* pCyclicBuf, uint16_t u16CycliSz, bool calcCRC);
 
 /**
@@ -99,7 +99,7 @@ Ipb_FrameCreate(TIpbFrame* tFrame, uint16_t u16Node, uint16_t u16SubNode, uint16
  * @return Node.
  */
 uint16_t
-Ipb_FrameGetNode(const TIpbFrame *tFrame);
+Ipb_FrameGetNode(const Ipb_TFrame *tFrame);
 
 /**
  * Returns the SubNode of the header.
@@ -109,7 +109,7 @@ Ipb_FrameGetNode(const TIpbFrame *tFrame);
  * @return SubNode.
  */
 uint16_t
-Ipb_FrameGetSubNode(const TIpbFrame *tFrame);
+Ipb_FrameGetSubNode(const Ipb_TFrame *tFrame);
 
 /**
  * Returns the address of the header.
@@ -119,7 +119,7 @@ Ipb_FrameGetSubNode(const TIpbFrame *tFrame);
  * @return Address.
  */
 uint16_t
-Ipb_FrameGetAddr(const TIpbFrame* tFrame);
+Ipb_FrameGetAddr(const Ipb_TFrame* tFrame);
 
 /**
  * Returns the command (request or reply) of the static data.
@@ -129,7 +129,7 @@ Ipb_FrameGetAddr(const TIpbFrame* tFrame);
  * @return Command.
  */
 uint8_t
-Ipb_FrameGetCmd(const TIpbFrame* tFrame);
+Ipb_FrameGetCmd(const Ipb_TFrame* tFrame);
 
 /**
  * Checks if the static data is segmented and requires further data.
@@ -139,7 +139,7 @@ Ipb_FrameGetCmd(const TIpbFrame* tFrame);
  * @return true if static data is segmented.
  */
 bool
-Ipb_FrameGetSegmented(const TIpbFrame* tFrame);
+Ipb_FrameGetSegmented(const Ipb_TFrame* tFrame);
 
 /**
  * Returns the static data of a frame.
@@ -149,7 +149,7 @@ Ipb_FrameGetSegmented(const TIpbFrame* tFrame);
  * @return Configtic data
  */
 uint16_t
-Ipb_FrameGetConfigData(const TIpbFrame* tFrame, uint16_t* buf);
+Ipb_FrameGetConfigData(const Ipb_TFrame* tFrame, uint16_t* buf);
 
 /**
  * Indicates if the crc for the input frame is correct
@@ -161,6 +161,6 @@ Ipb_FrameGetConfigData(const TIpbFrame* tFrame, uint16_t* buf);
  *         false if crc is wrong
  */
 bool
-Ipb_FrameCheckCRC(const TIpbFrame* tFrame);
+Ipb_FrameCheckCRC(const Ipb_TFrame* tFrame);
 
 #endif /* IPB_FRAME_H */
