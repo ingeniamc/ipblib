@@ -109,7 +109,7 @@ int32_t Ipb_FrameCreate(Ipb_TFrame* tFrame, uint16_t u16Node, uint16_t u16SubNod
         {
             /* Compute CRC and add it to u16Buffer */
             tFrame->u16Buf[(IPB_FRM_HEAD_SZ + IPB_FRM_CONFIG_SZ) + u16CycliSz] =
-                        Ipb_FrameCRC(tFrame, tFrame->u16Sz);
+                        Ipb_FrameCRC(tFrame, (tFrame->u16Sz << 1));
             tFrame->u16Sz += IPB_FRM_CRC_SZ;
         }
         break;
