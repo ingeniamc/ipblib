@@ -30,3 +30,19 @@ __attribute__((weak))uint16_t Ipb_IntfUartTransmission(uint16_t u16Id, const uin
     /** Return write bytes */
     return 0;
 }
+
+__attribute__((weak))uint16_t Ipb_IntfUsbReception(uint16_t u16Id, uint8_t *pu8Buf, uint16_t u16Size)
+{
+    /** Receive data */
+
+    /** Return read bytes */
+    return 0;
+}
+
+__attribute__((weak))uint16_t Ipb_IntfUsbTransmission(uint16_t u16Id, const uint8_t *pu8Buf, uint16_t u16Size)
+{
+    /** Trasmit data */
+
+    /** Return write bytes */
+    return 0;
+}

@@ -55,4 +55,38 @@ Ipb_IntfUartReception(uint16_t u16Id, uint8_t *pu8Buf, uint16_t u16Size);
 uint16_t
 Ipb_IntfUartTransmission(uint16_t u16Id, const uint8_t *pu8Buf, uint16_t u16Size);
 
+/**
+ * USB reception
+ *
+ * @note Non Blocking function
+ *
+ * @param[in] u16Id
+ *  Identification of the IPB instance
+ * @param[in] pu8Buf
+ *  Pointer to buffer to be recevied
+ * @param[in] u16Size
+ *  Size to receive bytes
+ *
+ * @retval number of read bytes
+ */
+uint16_t
+Ipb_IntfUsbReception(uint16_t u16Id, uint8_t *pu8Buf, uint16_t u16Size);
+
+/**
+ * USB transmission
+ *
+ * @note Non Blocking function
+ *
+ * @param[in] u16Id
+ *  Identification of the IPB instance
+ * @param[in] pu8Buf
+ *  Pointer to buffer to be transmited
+ * @param[in] u16Size
+ *  Size to transmit bytes
+ *
+ * @retval number of read bytes
+ */
+uint16_t
+Ipb_IntfUsbTransmission(uint16_t u16Id, const uint8_t *pu8Buf, uint16_t u16Size);
+
 #endif /* IPB_USR_H */
