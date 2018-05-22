@@ -13,6 +13,7 @@
 #include <string.h>
 
 static uint16_t bAbortFlag;
+static uint16_t pTxData[IPB_FRM_CONFIG_SZ];
 
 static Ipb_EStatus
 Ipb_IntfReadUart(Ipb_TIntf* ptInst, uint16_t* pu16Node, uint16_t* pu16SubNode, uint16_t* pu16Addr, uint16_t* pu16Cmd,
@@ -56,6 +57,7 @@ Ipb_EStatus Ipb_IntfReadUart(Ipb_TIntf* ptInst, uint16_t* pu16Node, uint16_t* pu
     {
         ptInst->eState = IPB_READ_REQUEST;
         ptInst->u16Sz = 0;
+        pTxData[0] = 0;
     }
 
     switch (ptInst->eState)
@@ -98,8 +100,9 @@ Ipb_EStatus Ipb_IntfReadUart(Ipb_TIntf* ptInst, uint16_t* pu16Node, uint16_t* pu
             }
             break;
         case IPB_READ_ANSWER:
-            /** On segmented tranmission an ACK per received message is required */
-            Ipb_FrameCreate(&(ptInst->Txfrm), *pu16Node, *pu16SubNode, *pu16Addr, IPB_REP_ACK, IPB_FRM_NOTSEG, NULL, NULL, 0, true);
+            /** On segmented transmission an ACK per received message is required */
+            pTxData[0] += 1;
+            Ipb_FrameCreate(&(ptInst->Txfrm), *pu16Node, *pu16SubNode, *pu16Addr, IPB_REP_ACK, IPB_FRM_NOTSEG, (const void*)pTxData, NULL, 0, true);
             Ipb_IntfUartTransmission(ptInst->u16Id, (const uint8_t*) &(ptInst->Txfrm),
                     ((IPB_FRM_HEAD_SZ + IPB_FRM_CONFIG_SZ + IPB_FRM_CRC_SZ) * sizeof(uint16_t)));
             ptInst->eState = IPB_READ_REQUEST;
