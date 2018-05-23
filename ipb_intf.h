@@ -32,7 +32,11 @@ typedef enum
     /** Processing answer from read request */
     IPB_READ_ANSWER,
     /** Transaction error */
-    IPB_ERROR
+	IPB_ERROR,
+	/** Transaction write error */
+	IPB_WRITE_ERROR,
+	/** Transaction read error */
+	IPB_READ_ERROR
 } Ipb_EStatus;
 
 /** Ipb interfaces options */
