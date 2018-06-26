@@ -25,10 +25,10 @@ typedef struct
     {
         struct
         {
-            /** Node address */
-            uint16_t u12Node :12;
             /** Internal network node */
             uint16_t u4SubNode :4;
+            /** Node address */
+            uint16_t u12Node :12;
         };
         uint16_t u16NodeAll;
     } NodeId;
