@@ -93,7 +93,7 @@ Ipb_EStatus Ipb_IntfReadUart(Ipb_TIntf* ptInst, uint16_t* pu16Node, uint16_t* pu
                 {
                     /** CRC Error */
                     ptInst->eState = IPB_ERROR;
-                    Ipb_IntfUartDiscard(ptInst->u16Id);
+                    Ipb_IntfUartDiscardData(ptInst->u16Id);
                 }
             }
             break;

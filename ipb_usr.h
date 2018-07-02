@@ -63,6 +63,6 @@ Ipb_IntfUartTransmission(uint16_t u16Id, const uint8_t *pu8Buf, uint16_t u16Size
  *
  */
 void
-Ipb_IntfUartDiscard(uint16_t u16Id);
+Ipb_IntfUartDiscardData(uint16_t u16Id);
 
 #endif /* IPB_USR_H */
