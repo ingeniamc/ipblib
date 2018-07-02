@@ -30,3 +30,8 @@ __attribute__((weak))uint16_t Ipb_IntfUartTransmission(uint16_t u16Id, const uin
     /** Return write bytes */
     return 0;
 }
+
+__attribute__((weak))void Ipb_IntfUartDiscardData(uint16_t u16Id)
+{
+    /** Discard buffered data */
+}

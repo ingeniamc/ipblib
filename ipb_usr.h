@@ -55,4 +55,17 @@ Ipb_IntfUartReception(uint16_t u16Id, uint8_t *pu8Buf, uint16_t u16Size);
 uint16_t
 Ipb_IntfUartTransmission(uint16_t u16Id, const uint8_t *pu8Buf, uint16_t u16Size);
 
+/**
+ * UART Discard buffered data.
+ *
+ * @note Function called when reception errors occurs,
+ *  the buffered data need to be removed.
+ *
+ * @param[in] u16Id
+ *  Identification of the IPB instance
+ *
+ */
+void
+Ipb_IntfUartDiscardData(uint16_t u16Id);
+
 #endif /* IPB_USR_H */

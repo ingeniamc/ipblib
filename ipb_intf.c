@@ -12,7 +12,6 @@
 #include <stdio.h>
 #include <string.h>
 
-static uint16_t bAbortFlag;
 static uint16_t pTxData[IPB_FRM_CONFIG_SZ];
 
 static Ipb_EStatus
@@ -40,7 +39,6 @@ void Ipb_IntfInit(Ipb_TIntf* ptInst, Ipb_EIntf eIntf, uint16_t u16Id)
             break;
     }
 
-    bAbortFlag = false;
 }
 
 void Ipb_IntfDeinit(Ipb_TIntf* ptInst)
@@ -67,7 +65,6 @@ Ipb_EStatus Ipb_IntfReadUart(Ipb_TIntf* ptInst, uint16_t* pu16Node, uint16_t* pu
             if (Ipb_IntfUartReception(ptInst->u16Id, (uint8_t*) &ptInst->Rxfrm,
                     ((IPB_FRM_HEAD_SZ + IPB_FRM_CONFIG_SZ + IPB_FRM_CRC_SZ) * sizeof(uint16_t))) != 0)
             {
-                bAbortFlag = false;
                 ptInst->Rxfrm.u16Sz = (IPB_FRM_HEAD_SZ + IPB_FRM_CONFIG_SZ + IPB_FRM_CRC_SZ);
 
                 if (Ipb_FrameCheckCRC(&ptInst->Rxfrm) != false)
@@ -96,6 +93,7 @@ Ipb_EStatus Ipb_IntfReadUart(Ipb_TIntf* ptInst, uint16_t* pu16Node, uint16_t* pu
                 {
                     /** CRC Error */
                     ptInst->eState = IPB_ERROR;
+                    Ipb_IntfUartDiscardData(ptInst->u16Id);
                 }
             }
             break;
@@ -149,7 +147,6 @@ Ipb_EStatus Ipb_IntfWriteUart(Ipb_TIntf* ptInst, uint16_t* pu16Node, uint16_t* p
             if (Ipb_IntfUartReception(ptInst->u16Id, (uint8_t*) &ptInst->Rxfrm,
                     (IPB_FRM_HEAD_SZ + IPB_FRM_CONFIG_SZ + IPB_FRM_CRC_SZ) * sizeof(uint16_t)) != 0)
             {
-                bAbortFlag = false;
                 ptInst->Rxfrm.u16Sz = (IPB_FRM_HEAD_SZ + IPB_FRM_CONFIG_SZ + IPB_FRM_CRC_SZ);
 
                 if (Ipb_FrameCheckCRC(&ptInst->Rxfrm) != false)
