@@ -31,6 +31,11 @@ __attribute__((weak))uint16_t Ipb_IntfUartTransmission(uint16_t u16Id, const uin
     return 0;
 }
 
+__attribute__((weak))void Ipb_IntfUartDiscardData(uint16_t u16Id)
+{
+    /** Discard accumulated data from Uart buffer */
+}
+
 __attribute__((weak))uint16_t Ipb_IntfUsbReception(uint16_t u16Id, uint8_t *pu8Buf, uint16_t u16Size)
 {
     /** Receive data */

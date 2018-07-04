@@ -12,7 +12,7 @@
 #include <stdio.h>
 #include <string.h>
 
-static uint16_t bAbortFlag;
+static uint16_t pTxData[IPB_FRM_CONFIG_SZ];
 
 static Ipb_EStatus
 Ipb_IntfReadUart(Ipb_TIntf* ptInst, uint16_t* pu16Node, uint16_t* pu16SubNode, uint16_t* pu16Addr, uint16_t* pu16Cmd,
@@ -52,7 +52,6 @@ void Ipb_IntfInit(Ipb_TIntf* ptInst, Ipb_EIntf eIntf, uint16_t u16Id)
             break;
     }
 
-    bAbortFlag = false;
 }
 
 void Ipb_IntfDeinit(Ipb_TIntf* ptInst)
@@ -69,6 +68,7 @@ Ipb_EStatus Ipb_IntfReadUart(Ipb_TIntf* ptInst, uint16_t* pu16Node, uint16_t* pu
     {
         ptInst->eState = IPB_READ_REQUEST;
         ptInst->u16Sz = 0;
+        pTxData[0] = 0;
     }
 
     switch (ptInst->eState)
@@ -78,7 +78,6 @@ Ipb_EStatus Ipb_IntfReadUart(Ipb_TIntf* ptInst, uint16_t* pu16Node, uint16_t* pu
             if (Ipb_IntfUartReception(ptInst->u16Id, (uint8_t*) &ptInst->Rxfrm,
                     ((IPB_FRM_HEAD_SZ + IPB_FRM_CONFIG_SZ + IPB_FRM_CRC_SZ) * sizeof(uint16_t))) != 0)
             {
-                bAbortFlag = false;
                 ptInst->Rxfrm.u16Sz = (IPB_FRM_HEAD_SZ + IPB_FRM_CONFIG_SZ + IPB_FRM_CRC_SZ);
 
                 if (Ipb_FrameCheckCRC(&ptInst->Rxfrm) != false)
@@ -107,12 +106,14 @@ Ipb_EStatus Ipb_IntfReadUart(Ipb_TIntf* ptInst, uint16_t* pu16Node, uint16_t* pu
                 {
                     /** CRC Error */
                     ptInst->eState = IPB_ERROR;
+                    Ipb_IntfUartDiscardData(ptInst->u16Id);
                 }
             }
             break;
         case IPB_READ_ANSWER:
-            /** On segmented tranmission an ACK per received message is required */
-            Ipb_FrameCreate(&(ptInst->Txfrm), *pu16Node, *pu16SubNode, *pu16Addr, IPB_REP_ACK, IPB_FRM_NOTSEG, NULL, NULL, 0, true);
+            /** On segmented transmission an ACK per received message is required */
+            pTxData[0] += 1;
+            Ipb_FrameCreate(&(ptInst->Txfrm), *pu16Node, *pu16SubNode, *pu16Addr, IPB_REP_ACK, IPB_FRM_NOTSEG, (const void*)pTxData, NULL, 0, true);
             Ipb_IntfUartTransmission(ptInst->u16Id, (const uint8_t*) &(ptInst->Txfrm),
                     ((IPB_FRM_HEAD_SZ + IPB_FRM_CONFIG_SZ + IPB_FRM_CRC_SZ) * sizeof(uint16_t)));
             ptInst->eState = IPB_READ_REQUEST;
@@ -159,7 +160,6 @@ Ipb_EStatus Ipb_IntfWriteUart(Ipb_TIntf* ptInst, uint16_t* pu16Node, uint16_t* p
             if (Ipb_IntfUartReception(ptInst->u16Id, (uint8_t*) &ptInst->Rxfrm,
                     (IPB_FRM_HEAD_SZ + IPB_FRM_CONFIG_SZ + IPB_FRM_CRC_SZ) * sizeof(uint16_t)) != 0)
             {
-                bAbortFlag = false;
                 ptInst->Rxfrm.u16Sz = (IPB_FRM_HEAD_SZ + IPB_FRM_CONFIG_SZ + IPB_FRM_CRC_SZ);
 
                 if (Ipb_FrameCheckCRC(&ptInst->Rxfrm) != false)
@@ -198,7 +198,6 @@ Ipb_EStatus Ipb_IntfReadUsb(Ipb_TIntf* ptInst, uint16_t* pu16Node, uint16_t* pu1
             if (Ipb_IntfUsbReception(ptInst->u16Id, (uint8_t*) &ptInst->Rxfrm,
                     ((IPB_FRM_HEAD_SZ + IPB_FRM_CONFIG_SZ + IPB_FRM_CRC_SZ) * sizeof(uint16_t))) != 0)
             {
-                bAbortFlag = false;
                 ptInst->Rxfrm.u16Sz = (IPB_FRM_HEAD_SZ + IPB_FRM_CONFIG_SZ + IPB_FRM_CRC_SZ);
 
                 if (Ipb_FrameCheckCRC(&ptInst->Rxfrm) != false)
@@ -279,7 +278,6 @@ Ipb_EStatus Ipb_IntfWriteUsb(Ipb_TIntf* ptInst, uint16_t* pu16Node, uint16_t* pu
             if (Ipb_IntfUsbReception(ptInst->u16Id, (uint8_t*) &ptInst->Rxfrm,
                     (IPB_FRM_HEAD_SZ + IPB_FRM_CONFIG_SZ + IPB_FRM_CRC_SZ) * sizeof(uint16_t)) != 0)
             {
-                bAbortFlag = false;
                 ptInst->Rxfrm.u16Sz = (IPB_FRM_HEAD_SZ + IPB_FRM_CONFIG_SZ + IPB_FRM_CRC_SZ);
 
                 if (Ipb_FrameCheckCRC(&ptInst->Rxfrm) != false)

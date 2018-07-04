@@ -56,6 +56,15 @@ uint16_t
 Ipb_IntfUartTransmission(uint16_t u16Id, const uint8_t *pu8Buf, uint16_t u16Size);
 
 /**
+ * Discard accumulated data of the uart buffer
+ *
+ * @param[in] u16Id
+ *  Identification of the IPB instance
+ */
+void
+Ipb_IntfUartDiscardData(uint16_t u16Id);
+
+/**
  * USB reception
  *
  * @note Non Blocking function
@@ -68,6 +77,9 @@ Ipb_IntfUartTransmission(uint16_t u16Id, const uint8_t *pu8Buf, uint16_t u16Size
  *  Size to receive bytes
  *
  * @retval number of read bytes
+ * @note Function called when reception errors occurs,
+ *  the buffered data need to be removed.
+ *
  */
 uint16_t
 Ipb_IntfUsbReception(uint16_t u16Id, uint8_t *pu8Buf, uint16_t u16Size);
