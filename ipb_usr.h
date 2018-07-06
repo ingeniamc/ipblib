@@ -101,4 +101,13 @@ Ipb_IntfUsbReception(uint16_t u16Id, uint8_t *pu8Buf, uint16_t u16Size);
 uint16_t
 Ipb_IntfUsbTransmission(uint16_t u16Id, const uint8_t *pu8Buf, uint16_t u16Size);
 
+/**
+ * Discard accumulated data of the usb buffer
+ *
+ * @param[in] u16Id
+ *  Identification of the IPB instance
+ */
+void
+Ipb_IntfUsbDiscardData(uint16_t u16Id);
+
 #endif /* IPB_USR_H */

@@ -51,3 +51,8 @@ __attribute__((weak))uint16_t Ipb_IntfUsbTransmission(uint16_t u16Id, const uint
     /** Return write bytes */
     return 0;
 }
+
+__attribute__((weak))void Ipb_IntfUsbDiscardData(uint16_t u16Id)
+{
+    /** Discard accumulated data from Uart buffer */
+}
