@@ -47,6 +47,8 @@
 #define IPB_REP_READ_ERROR      5U
 /** Error detected during write */
 #define IPB_REP_WRITE_ERROR     6U
+/** General error */
+#define IPB_REP_ERROR           4U
 
 /** Ingenia protocol segmentation definitions */
 #define IPB_FRM_NOTSEG          0U
