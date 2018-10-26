@@ -50,9 +50,9 @@
 /** General error */
 #define IPB_REP_ERROR           4U
 
-/** Ingenia protocol segmentation definitions */
-#define IPB_FRM_NOTSEG          0U
-#define IPB_FRM_SEG             1U
+/** Ingenia protocol extended flag definitions */
+#define IPB_FRM_NOTEXT          0U
+#define IPB_FRM_EXT             1U
 
 /** Ingenia protocol bus frame */
 typedef struct {

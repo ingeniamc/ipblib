@@ -55,6 +55,10 @@ typedef struct
     uint16_t u16Data[IPB_MAX_DATA_SZ];
     /* Message status */
     Ipb_EStatus eStatus;
+    /* Extended bit */
+    bool isExtended;
+    /* Pointer to extended data */
+    void* pExtData;
 } Ipb_TMsg;
 
 /** Initialization functions */

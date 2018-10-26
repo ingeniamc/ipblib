@@ -41,7 +41,8 @@ Ipb_EStatus Ipb_Write(Ipb_TInst* ptInst, Ipb_TMsg* ptMsg, uint32_t u32Timeout)
             do
             {
                 ptMsg->eStatus = ptInst->tIntf.Write(&ptInst->tIntf, &ptMsg->u16Node, &ptMsg->u16SubNode,
-                        &ptMsg->u16Addr, &ptMsg->u16Cmd, &ptMsg->u16Data[0], &ptMsg->u16Size);
+                        &ptMsg->u16Addr, &ptMsg->u16Cmd, &ptMsg->u16Data[0], &ptMsg->u16Size,
+                        ptMsg->isExtended, ptMsg->pExtData);
 
             } while ((ptMsg->eStatus != IPB_ERROR) && (ptMsg->eStatus != IPB_SUCCESS)
                     && ((Ipb_GetMillis() - u32Millis) < u32Timeout));
@@ -50,7 +51,7 @@ Ipb_EStatus Ipb_Write(Ipb_TInst* ptInst, Ipb_TMsg* ptMsg, uint32_t u32Timeout)
         {
             /** No blocking mode */
             ptMsg->eStatus = ptInst->tIntf.Write(&ptInst->tIntf, &ptMsg->u16Node, &ptMsg->u16SubNode, &ptMsg->u16Addr,
-                    &ptMsg->u16Cmd, &ptMsg->u16Data[0], &u16Sz);
+                    &ptMsg->u16Cmd, &ptMsg->u16Data[0], &u16Sz, ptMsg->isExtended, ptMsg->pExtData);
         }
     }
     else
