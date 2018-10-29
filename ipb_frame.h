@@ -16,6 +16,9 @@
 /** Ingenia protocol frame maximum buffer size */
 #define IPB_FRM_MAX_DATA_SZ     1024U
 
+/** Ingenia protocol frame maximum extended size */
+#define IPB_FRM_MAX_EXT_DATA_SZ_BYTES (uint16_t)(1024U - (IPB_FRAME_TOTAL_CFG_SIZE * sizeof(uint16_t)))
+
 /** Ingenia protocol frame static buffer header size */
 #define IPB_FRM_HEAD_SZ			2U
 /** Ingenia protocol frame static buffer size */
