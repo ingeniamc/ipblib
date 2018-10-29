@@ -137,6 +137,7 @@ Ipb_EStatus Ipb_IntfWriteUart(Ipb_TIntf* ptInst, uint16_t* pu16Node, uint16_t* p
     switch (ptInst->eState)
     {
         case IPB_WRITE_REQUEST:
+        {
             if (ptInst->u16Sz <= IPB_FRM_CONFIG_SZ)
             {
                 Ipb_FrameCreate(&ptInst->Txfrm, *pu16Node, *pu16SubNode, *pu16Addr, *pu16Cmd, isExt,
@@ -148,23 +149,20 @@ Ipb_EStatus Ipb_IntfWriteUart(Ipb_TIntf* ptInst, uint16_t* pu16Node, uint16_t* p
                 ptInst->eState = IPB_ERROR;
             }
 
-            if (Ipb_IntfUartTransmission(ptInst->u16Id, (const uint8_t*) &(ptInst->Txfrm),
-                    (ptInst->Txfrm.u16Sz * sizeof(uint16_t))) != false)
+            uint16_t u16CngFrmSzBy = (ptInst->Txfrm.u16Sz * sizeof(uint16_t));
+            uint16_t u16ExtFrmSzBy = 0;
+            if (isExt != false)
+            {
+                /* Copy from config data slot the size of extended data */
+                memcpy((void*)&u16ExtFrmSzBy, (const void*)pu16Data, sizeof(uint16_t));
+                memcpy((void*)(&ptInst->Txfrm.u16Buf[u16CngFrmSzBy]), (const void*)pExtData, u16ExtFrmSzBy);
+            }
+
+            if (Ipb_IntfUartTransmission(ptInst->u16Id, (const uint8_t*)ptInst->Txfrm.u16Buf, (u16CngFrmSzBy + u16ExtFrmSzBy)) != false)
             {
                 ptInst->eState = IPB_ERROR;
             }
-            else if (isExt)
-            {
-                /* Copy from config data slot the size of extended data */
-                uint16_t u16ExtDataSzBy;
-                memcpy((void*)&u16ExtDataSzBy, (const void*)pu16Data, sizeof(uint16_t));
-
-                if (Ipb_IntfUartTransmission(ptInst->u16Id, (const uint8_t*)pExtData,
-                                             u16ExtDataSzBy) != false)
-                {
-                    ptInst->eState = IPB_ERROR;
-                }
-            }
+        }
             break;
         default:
             ptInst->eState = IPB_STANDBY;
@@ -250,6 +248,7 @@ Ipb_EStatus Ipb_IntfWriteUsb(Ipb_TIntf* ptInst, uint16_t* pu16Node, uint16_t* pu
     switch (ptInst->eState)
     {
         case IPB_WRITE_REQUEST:
+        {
             if (ptInst->u16Sz <= IPB_FRM_CONFIG_SZ)
             {
                 Ipb_FrameCreate(&ptInst->Txfrm, *pu16Node, *pu16SubNode, *pu16Addr, *pu16Cmd, isExt,
@@ -261,24 +260,20 @@ Ipb_EStatus Ipb_IntfWriteUsb(Ipb_TIntf* ptInst, uint16_t* pu16Node, uint16_t* pu
                 ptInst->eState = IPB_ERROR;
             }
 
-            if (Ipb_IntfUsbTransmission(ptInst->u16Id, (const uint8_t*) &(ptInst->Txfrm),
-                    (ptInst->Txfrm.u16Sz * sizeof(uint16_t))) != false)
+            uint16_t u16CngFrmSzBy = (ptInst->Txfrm.u16Sz * sizeof(uint16_t));
+            uint16_t u16ExtFrmSzBy = 0;
+            if (isExt != false)
+            {
+                /* Copy from config data slot the size of extended data */
+                memcpy((void*)&u16ExtFrmSzBy, (const void*)pu16Data, sizeof(uint16_t));
+                memcpy((void*)(&ptInst->Txfrm.u16Buf[u16CngFrmSzBy]), (const void*)pExtData, u16ExtFrmSzBy);
+            }
+
+            if (Ipb_IntfUsbTransmission(ptInst->u16Id, (const uint8_t*)ptInst->Txfrm.u16Buf, (u16CngFrmSzBy + u16ExtFrmSzBy)) != false)
             {
                 ptInst->eState = IPB_ERROR;
             }
-            else if (isExt)
-            {
-                /* Copy from config data slot the size of extended data */
-                uint16_t u16ExtDataSzBy;
-                memcpy((void*)&u16ExtDataSzBy, (const void*)pu16Data, sizeof(uint16_t));
-
-                if (Ipb_IntfUsbTransmission(ptInst->u16Id, (const uint8_t*)pExtData,
-                                             u16ExtDataSzBy) != false)
-                {
-                    ptInst->eState = IPB_ERROR;
-                }
-            }
-
+        }
             break;
         default:
             ptInst->eState = IPB_STANDBY;

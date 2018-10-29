@@ -14,7 +14,7 @@
 #include <stdbool.h>
 
 /** Ingenia protocol frame maximum buffer size */
-#define IPB_FRM_MAX_DATA_SZ     128U
+#define IPB_FRM_MAX_DATA_SZ     1024U
 
 /** Ingenia protocol frame static buffer header size */
 #define IPB_FRM_HEAD_SZ			2U
