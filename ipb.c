@@ -30,7 +30,6 @@ void Ipb_Deinit(Ipb_TInst* ptInst)
 
 Ipb_EStatus Ipb_Write(Ipb_TInst* ptInst, Ipb_TMsg* ptMsg, uint32_t u32Timeout)
 {
-    uint16_t u16Sz;
     ptMsg->eStatus = IPB_ERROR;
 
     if (ptInst->isCyclic == false)
@@ -40,9 +39,8 @@ Ipb_EStatus Ipb_Write(Ipb_TInst* ptInst, Ipb_TMsg* ptMsg, uint32_t u32Timeout)
             uint32_t u32Millis = Ipb_GetMillis();
             do
             {
-                ptMsg->eStatus = ptInst->tIntf.Write(&ptInst->tIntf, &ptMsg->u16Node, &ptMsg->u16SubNode,
-                        &ptMsg->u16Addr, &ptMsg->u16Cmd, &ptMsg->u16Data[0], &ptMsg->u16Size,
-                        ptMsg->isExtended, ptMsg->pExtData);
+                ptMsg->eStatus = ptInst->tIntf.Write(&ptInst->tIntf, &ptMsg->u16SubNode, &ptMsg->u16Addr,
+                                                     &ptMsg->u16Cmd, ptMsg->pu16Data, ptMsg->u16Size);
 
             } while ((ptMsg->eStatus != IPB_ERROR) && (ptMsg->eStatus != IPB_SUCCESS)
                     && ((Ipb_GetMillis() - u32Millis) < u32Timeout));
@@ -50,8 +48,8 @@ Ipb_EStatus Ipb_Write(Ipb_TInst* ptInst, Ipb_TMsg* ptMsg, uint32_t u32Timeout)
         else
         {
             /** No blocking mode */
-            ptMsg->eStatus = ptInst->tIntf.Write(&ptInst->tIntf, &ptMsg->u16Node, &ptMsg->u16SubNode, &ptMsg->u16Addr,
-                    &ptMsg->u16Cmd, &ptMsg->u16Data[0], &u16Sz, ptMsg->isExtended, ptMsg->pExtData);
+            ptMsg->eStatus = ptInst->tIntf.Write(&ptInst->tIntf, &ptMsg->u16SubNode, &ptMsg->u16Addr,
+                                                 &ptMsg->u16Cmd, ptMsg->pu16Data, ptMsg->u16Size);
         }
     }
     else
@@ -73,19 +71,17 @@ Ipb_EStatus Ipb_Read(Ipb_TInst* ptInst, Ipb_TMsg* ptMsg, uint32_t u32Timeout)
             uint32_t u32Millis = Ipb_GetMillis();
             do
             {
-                ptMsg->eStatus = ptInst->tIntf.Read(&ptInst->tIntf, &ptMsg->u16Node, &ptMsg->u16SubNode,
-                        &ptMsg->u16Addr, &ptMsg->u16Cmd, &ptMsg->u16Data[0]);
+                ptMsg->eStatus = ptInst->tIntf.Read(&ptInst->tIntf, &ptMsg->u16SubNode, &ptMsg->u16Addr,
+                                                    &ptMsg->u16Cmd, ptMsg->pu16Data, &ptMsg->u16Size);
 
             } while ((ptMsg->eStatus != IPB_ERROR) && (ptMsg->eStatus != IPB_SUCCESS)
                     && ((Ipb_GetMillis() - u32Millis) < u32Timeout));
-
-            ptMsg->u16Size = ptInst->tIntf.u16Sz;
         }
         else
         {
             /** No blocking mode */
-            ptMsg->eStatus = ptInst->tIntf.Read(&ptInst->tIntf, &ptMsg->u16Node, &ptMsg->u16SubNode, &ptMsg->u16Addr,
-                    &ptMsg->u16Cmd, &ptMsg->u16Data[0]);
+            ptMsg->eStatus = ptInst->tIntf.Read(&ptInst->tIntf, &ptMsg->u16SubNode, &ptMsg->u16Addr,
+                                                &ptMsg->u16Cmd, ptMsg->pu16Data, &ptMsg->u16Size);
         }
     }
     else

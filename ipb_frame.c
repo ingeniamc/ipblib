@@ -27,8 +27,8 @@ typedef struct
         {
             /** Internal network node */
             uint16_t u4SubNode :4;
-            /** Node address */
-            uint16_t u12Node :12;
+            /** Reserved bits */
+            uint16_t u12Reserved :12;
         };
         uint16_t u16NodeAll;
     } NodeId;
@@ -37,8 +37,8 @@ typedef struct
     {
         struct
         {
-            /** Segmented message */
-            uint16_t u1Pending :1;
+            /** Extended message */
+            uint16_t u1Extended :1;
             /** Frame command identification */
             uint16_t u3Cmd :3;
             /** Address of the Static Data */
@@ -48,19 +48,11 @@ typedef struct
     } Command;
 } THeader;
 
-/** Ingenia protocol frame header size */
-#define IPB_FRM_HDR_SZ         1U
-/** Ingenia protocol frame CRC size */
-#define IPB_FRM_CRC_SZ         1U
-/** Ingenia protocol frame dynamic u16Buffer size */
-#define IPB_FRM_MAX_DYN_SZ     (IPB_FRM_MAX_DATA_SZ - IPB_FRM_HDR_SZ - \
-                                IPB_FRM_CONFIG_SZ - IPB_FRM_CRC_SZ)
-
 uint16_t
 Ipb_FrameCRC(const Ipb_TFrame* tFrame, uint16_t u16Sz);
 
-int32_t Ipb_FrameCreate(Ipb_TFrame* tFrame, uint16_t u16Node, uint16_t u16SubNode, uint16_t u16Addr, uint8_t u8Cmd,
-        uint8_t u8Pending, const void* pConfigBuf, const void* pCyclicBuf, uint16_t u16CycliSz, bool calcCRC)
+int32_t Ipb_FrameCreate(Ipb_TFrame* tFrame, uint16_t u16SubNode, uint16_t u16Addr, uint8_t u8Cmd,
+                        const uint16_t* pu16Buf, uint16_t u16Sz, bool calcCRC)
 {
     int32_t err = 0;
 
@@ -74,57 +66,56 @@ int32_t Ipb_FrameCreate(Ipb_TFrame* tFrame, uint16_t u16Node, uint16_t u16SubNod
             break;
         }
 
-        /* Check dynamic u16Buffer size */
-        if (u16CycliSz > IPB_FRM_MAX_DYN_SZ)
+        /* Check max data size */
+        if (u16Sz > IPB_MAX_DATA_SZ)
         {
             err = -2;
             break;
         }
 
         /* Build header and assign it to u16Buffer */
-        tHeader.NodeId.u12Node = u16Node;
+        tHeader.NodeId.u12Reserved = (uint16_t)0U;
         tHeader.NodeId.u4SubNode = u16SubNode;
         tFrame->u16Buf[0] = tHeader.NodeId.u16NodeAll;
         tHeader.Command.u12Addr = u16Addr;
         tHeader.Command.u3Cmd = u8Cmd;
-        tHeader.Command.u1Pending = u8Pending;
+        tHeader.Command.u1Extended = (u16Sz > IPB_FRM_CONFIG_SZ);
         tFrame->u16Buf[1] = tHeader.Command.u16All;
 
-        /* Copy static & dynamic u16Buffer (if any) */
-        if (pConfigBuf != NULL)
+        /* Copy static & extended u16Buffer (if any) */
+        if (pu16Buf != NULL)
         {
-            memcpy(&tFrame->u16Buf[IPB_FRM_HEAD_SZ], pConfigBuf, (sizeof(tFrame->u16Buf[0]) * IPB_FRM_CONFIG_SZ));
+            memcpy(&tFrame->u16Buf[IPB_FRM_HEAD_SZ], (const void*)pu16Buf,
+                   (sizeof(tFrame->u16Buf[0]) * u16Sz));
         }
         else
         {
-            memset(&tFrame->u16Buf[IPB_FRM_HEAD_SZ], 0, (sizeof(tFrame->u16Buf[0]) * IPB_FRM_CONFIG_SZ));
+            memset(&tFrame->u16Buf[IPB_FRM_HEAD_SZ], 0,
+                   (sizeof(tFrame->u16Buf[0]) * u16Sz));
         }
 
-        memcpy(&tFrame->u16Buf[(IPB_FRM_HEAD_SZ + IPB_FRM_CONFIG_SZ)], pConfigBuf,
-                (sizeof(tFrame->u16Buf[0]) * u16CycliSz));
-
-        tFrame->u16Sz = IPB_FRM_HEAD_SZ + IPB_FRM_CONFIG_SZ + u16CycliSz;
+        tFrame->u16Sz = IPB_FRM_HEAD_SZ + IPB_FRM_CONFIG_SZ;
 
         if (calcCRC != false)
         {
             /* Compute CRC and add it to u16Buffer */
-            tFrame->u16Buf[(IPB_FRM_HEAD_SZ + IPB_FRM_CONFIG_SZ) + u16CycliSz] =
+            tFrame->u16Buf[IPB_FRM_HEAD_SZ + IPB_FRM_CONFIG_SZ] =
                         Ipb_FrameCRC(tFrame, (tFrame->u16Sz << 1));
             tFrame->u16Sz += IPB_FRM_CRC_SZ;
         }
+
+        if (u16Sz > IPB_FRM_CONFIG_SZ)
+        {
+            memcpy(&tFrame->u16Buf[tFrame->u16Sz], (const void*)(pu16Buf + IPB_FRM_CONFIG_SZ),
+                   (sizeof(tFrame->u16Buf[0]) * (u16Sz - IPB_FRM_CONFIG_SZ)));
+
+            tFrame->u16Sz += (u16Sz - IPB_FRM_CONFIG_SZ);
+        }
+
         break;
     }
 
     return err;
-}
-
-uint16_t Ipb_FrameGetNode(const Ipb_TFrame* tFrame)
-{
-    THeader tHeader;
-
-    tHeader.NodeId.u16NodeAll = tFrame->u16Buf[IPB_FRM_NODE_IDX];
-
-    return (uint16_t) tHeader.NodeId.u12Node;
 }
 
 uint16_t Ipb_FrameGetSubNode(const Ipb_TFrame* tFrame)
@@ -136,12 +127,12 @@ uint16_t Ipb_FrameGetSubNode(const Ipb_TFrame* tFrame)
     return (uint16_t) tHeader.NodeId.u4SubNode;
 }
 
-bool Ipb_FrameGetSegmented(const Ipb_TFrame* tFrame)
+bool Ipb_FrameGetExtended(const Ipb_TFrame* tFrame)
 {
     THeader tHeader;
 
     tHeader.Command.u16All = tFrame->u16Buf[IPB_FRM_CMD_IDX];
-    return (bool) tHeader.Command.u1Pending;
+    return (bool) tHeader.Command.u1Extended;
 }
 
 uint16_t Ipb_FrameGetAddr(const Ipb_TFrame* tFrame)

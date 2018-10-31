@@ -13,8 +13,6 @@
 #include <stdint.h>
 #include "ipb_intf.h"
 
-#define IPB_MAX_DATA_SZ 128
-
 #define IPB_DFLT_TIMEOUT 500
 
 typedef enum
@@ -41,8 +39,6 @@ typedef struct
 /** Frame data struct */
 typedef struct
 {
-    /* Node data */
-    uint16_t u16Node;
     /* Subnode data */
     uint16_t u16SubNode;
     /* Address data */
@@ -51,14 +47,10 @@ typedef struct
     uint16_t u16Cmd;
     /* Message total size (bytes) */
     uint16_t u16Size;
-    /* Static data */
-    uint16_t u16Data[IPB_MAX_DATA_SZ];
+    /* Pointer to data */
+    uint16_t pu16Data[IPB_FRM_MAX_DATA_SZ - (IPB_FRM_HEAD_SZ + IPB_FRM_CRC_SZ)];
     /* Message status */
     Ipb_EStatus eStatus;
-    /* Extended bit */
-    bool isExtended;
-    /* Pointer to extended data */
-    void* pExtData;
 } Ipb_TMsg;
 
 /** Initialization functions */
