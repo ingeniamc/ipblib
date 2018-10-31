@@ -115,7 +115,7 @@ Ipb_EStatus Ipb_IntfWriteUart(Ipb_TIntf* ptInst, uint16_t* pu16SubNode, uint16_t
             Ipb_FrameCreate(&ptInst->Txfrm, *pu16SubNode, *pu16Addr, *pu16Cmd, pu16Data, u16Sz, true);
             ptInst->eState = IPB_SUCCESS;
 
-            if (Ipb_IntfUartTransmission(ptInst->u16Id, (const uint8_t*)ptInst->Txfrm.u16Buf,
+            if (Ipb_IntfUartTransmission(ptInst->u16Id, (const uint8_t*)ptInst->Txfrm.pu16Buf,
                                          (ptInst->Txfrm.u16Sz * sizeof(uint16_t))) != false)
             {
                 ptInst->eState = IPB_ERROR;
@@ -190,7 +190,7 @@ Ipb_EStatus Ipb_IntfWriteUsb(Ipb_TIntf* ptInst, uint16_t* pu16SubNode, uint16_t*
                 Ipb_FrameCreate(&ptInst->Txfrm, *pu16SubNode, *pu16Addr, *pu16Cmd, pu16Data, u16Sz, true);
                 ptInst->eState = IPB_SUCCESS;
 
-                if (Ipb_IntfUsbTransmission(ptInst->u16Id, (const uint8_t*)ptInst->Txfrm.u16Buf, ptInst->Txfrm.u16Sz)
+                if (Ipb_IntfUsbTransmission(ptInst->u16Id, (const uint8_t*)ptInst->Txfrm.pu16Buf, ptInst->Txfrm.u16Sz)
                         != false)
                 {
                     ptInst->eState = IPB_ERROR;

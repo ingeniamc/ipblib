@@ -60,7 +60,7 @@
 /** Ingenia protocol bus frame */
 typedef struct {
 	/** Data buffer */
-    uint16_t u16Buf[IPB_FRM_MAX_DATA_SZ];
+    uint16_t pu16Buf[IPB_FRM_MAX_DATA_SZ];
     /** Frame size */
     uint16_t u16Sz;
 } Ipb_TFrame;

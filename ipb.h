@@ -39,17 +39,17 @@ typedef struct
 /** Frame data struct */
 typedef struct
 {
-    /* Subnode data */
+    /** Subnode data */
     uint16_t u16SubNode;
-    /* Address data */
+    /** Address data */
     uint16_t u16Addr;
-    /* Command data */
+    /** Command data */
     uint16_t u16Cmd;
-    /* Message total size (bytes) */
+    /** Message total size (bytes) */
     uint16_t u16Size;
-    /* Pointer to data */
+    /** Pointer to data */
     uint16_t pu16Data[IPB_FRM_MAX_DATA_SZ - (IPB_FRM_HEAD_SZ + IPB_FRM_CRC_SZ)];
-    /* Message status */
+    /** Message status */
     Ipb_EStatus eStatus;
 } Ipb_TMsg;
 
