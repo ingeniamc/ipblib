@@ -74,7 +74,7 @@ int32_t Ipb_FrameCreate(Ipb_TFrame* tFrame, uint16_t u16SubNode, uint16_t u16Add
         }
 
         /* Build header and assign it to u16Buffer */
-        tHeader.NodeId.u12Reserved = (uint16_t)0U;
+        tHeader.NodeId.u12Reserved = (uint16_t)10U;
         tHeader.NodeId.u4SubNode = u16SubNode;
         tFrame->u16Buf[0] = tHeader.NodeId.u16NodeAll;
         tHeader.Command.u12Addr = u16Addr;
