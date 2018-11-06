@@ -32,7 +32,11 @@ typedef enum
     /** Processing answer from read request */
     IPB_READ_ANSWER,
     /** Transaction error */
-    IPB_ERROR
+	IPB_ERROR,
+	/** Transaction write error */
+	IPB_WRITE_ERROR,
+	/** Transaction read error */
+	IPB_READ_ERROR
 } Ipb_EStatus;
 
 /** Ipb interfaces options */
@@ -60,16 +64,12 @@ struct Ipb_TIntf
     Ipb_TFrame Txfrm;
     /** Frame pool for holding rx data */
     Ipb_TFrame Rxfrm;
-    /** Pending data size to be transmitted/received */
-    uint16_t u16Sz;
-    /** Pending bits flag */
-    bool ifPending;
     /** Write frame */
-    Ipb_EStatus (*Write)(Ipb_TIntf* ptInst, uint16_t* pu16Node, uint16_t* pu16SubNode, uint16_t* pu16Addr,
-            uint16_t* pu16Cmd, uint16_t* pu16Data, uint16_t* pu16Sz);
+    Ipb_EStatus (*Write)(Ipb_TIntf* ptInst, uint16_t* pu16SubNode, uint16_t* pu16Addr,
+            uint16_t* pu16Cmd, uint16_t* pu16Data, uint16_t u16Sz);
     /** Read frame */
-    Ipb_EStatus (*Read)(Ipb_TIntf* ptInst, uint16_t* pu16Node, uint16_t* pu16SubNode, uint16_t* pu16Addr,
-            uint16_t* pu16Cmd, uint16_t* pu16Data);
+    Ipb_EStatus (*Read)(Ipb_TIntf* ptInst, uint16_t* pu16SubNode, uint16_t* pu16Addr,
+            uint16_t* pu16Cmd, uint16_t* pu16Data, uint16_t* u16Sz);
 };
 
 /** Initialize a High speed protocol interface */
