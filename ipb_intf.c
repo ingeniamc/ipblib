@@ -71,7 +71,7 @@ Ipb_EStatus Ipb_IntfReadUart(Ipb_TIntf* ptInst, uint16_t* pu16SubNode, uint16_t*
     {
         case IPB_READ_REQUEST:
             /** UART read */
-            if (Ipb_IntfUartReception(ptInst->u16Id, (uint8_t*) &ptInst->Rxfrm,
+            if (Ipb_IntfUartReception(ptInst->u16Id, (uint8_t*)&ptInst->Rxfrm,
                     ((IPB_FRM_HEAD_SZ + IPB_FRM_CONFIG_SZ + IPB_FRM_CRC_SZ) * sizeof(uint16_t))) != 0)
             {
                 ptInst->Rxfrm.u16Sz = (IPB_FRM_HEAD_SZ + IPB_FRM_CONFIG_SZ + IPB_FRM_CRC_SZ);
@@ -82,6 +82,16 @@ Ipb_EStatus Ipb_IntfReadUart(Ipb_TIntf* ptInst, uint16_t* pu16SubNode, uint16_t*
                     *pu16Addr = Ipb_FrameGetAddr(&ptInst->Rxfrm);
                     *pu16Cmd = Ipb_FrameGetCmd(&ptInst->Rxfrm);
                     *pu16Sz = Ipb_FrameGetConfigData(&ptInst->Rxfrm, pu16Data);
+
+                    if (Ipb_FrameGetExtended(&ptInst->Rxfrm) != false)
+                    {
+                        uint16_t u16ExtSz = Ipb_IntfUartReception(ptInst->u16Id,
+                                             (uint8_t*)(ptInst->Rxfrm.pu16Buf + IPB_FRAME_TOTAL_CFG_SIZE), *pu16Data);
+                        memcpy((void*)(pu16Data + (*pu16Sz)),
+                               (const void*)(ptInst->Rxfrm.pu16Buf + IPB_FRAME_TOTAL_CFG_SIZE), (u16ExtSz * sizeof(uint16_t)));
+                        ptInst->Rxfrm.u16Sz += u16ExtSz;
+                        *pu16Sz += u16ExtSz;
+                    }
 
                     ptInst->eState = IPB_SUCCESS;
                 }
@@ -143,7 +153,7 @@ Ipb_EStatus Ipb_IntfReadUsb(Ipb_TIntf* ptInst, uint16_t* pu16SubNode, uint16_t* 
     {
         case IPB_READ_REQUEST:
             /** UART read */
-            if (Ipb_IntfUsbReception(ptInst->u16Id, (uint8_t*) &ptInst->Rxfrm,
+            if (Ipb_IntfUsbReception(ptInst->u16Id, (uint8_t*)&ptInst->Rxfrm,
                     ((IPB_FRM_HEAD_SZ + IPB_FRM_CONFIG_SZ + IPB_FRM_CRC_SZ) * sizeof(uint16_t))) != 0)
             {
                 ptInst->Rxfrm.u16Sz = (IPB_FRM_HEAD_SZ + IPB_FRM_CONFIG_SZ + IPB_FRM_CRC_SZ);
@@ -154,6 +164,16 @@ Ipb_EStatus Ipb_IntfReadUsb(Ipb_TIntf* ptInst, uint16_t* pu16SubNode, uint16_t* 
                     *pu16Addr = Ipb_FrameGetAddr(&ptInst->Rxfrm);
                     *pu16Cmd = Ipb_FrameGetCmd(&ptInst->Rxfrm);
                     *u16Sz = Ipb_FrameGetConfigData(&ptInst->Rxfrm, pu16Data);
+
+                    if (Ipb_FrameGetExtended(&ptInst->Rxfrm) != false)
+                    {
+                        uint16_t u16ExtSz = Ipb_IntfUsbReception(ptInst->u16Id,
+                                             (uint8_t*)(ptInst->Rxfrm.pu16Buf + IPB_FRAME_TOTAL_CFG_SIZE), *pu16Data);
+                        memcpy((void*)(pu16Data + (*pu16Sz)),
+                               (const void*)(ptInst->Rxfrm.pu16Buf + IPB_FRAME_TOTAL_CFG_SIZE), (u16ExtSz * sizeof(uint16_t)));
+                        ptInst->Rxfrm.u16Sz += u16ExtSz;
+                        *pu16Sz += u16ExtSz;
+                    }
 
                     ptInst->eState = IPB_SUCCESS;
                 }
