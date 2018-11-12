@@ -14,7 +14,7 @@
 
 static Ipb_EStatus
 Ipb_IntfReadUart(Ipb_TIntf* ptInst, uint16_t* pu16SubNode, uint16_t* pu16Addr, uint16_t* pu16Cmd,
-                 uint16_t* pu16Data, uint16_t* u16Sz);
+                 uint16_t* pu16Data, uint16_t* pu16Sz);
 
 static Ipb_EStatus
 Ipb_IntfWriteUart(Ipb_TIntf* ptInst, uint16_t* pu16SubNode, uint16_t* pu16Addr, uint16_t* pu16Cmd,
@@ -22,7 +22,7 @@ Ipb_IntfWriteUart(Ipb_TIntf* ptInst, uint16_t* pu16SubNode, uint16_t* pu16Addr, 
 
 static Ipb_EStatus
 Ipb_IntfReadUsb(Ipb_TIntf* ptInst, uint16_t* pu16SubNode, uint16_t* pu16Addr, uint16_t* pu16Cmd,
-                uint16_t* pu16Data, uint16_t* u16Sz);
+                uint16_t* pu16Data, uint16_t* pu16Sz);
 
 static Ipb_EStatus
 Ipb_IntfWriteUsb(Ipb_TIntf* ptInst, uint16_t* pu16SubNode, uint16_t* pu16Addr, uint16_t* pu16Cmd,
@@ -141,7 +141,7 @@ Ipb_EStatus Ipb_IntfWriteUart(Ipb_TIntf* ptInst, uint16_t* pu16SubNode, uint16_t
 }
 
 Ipb_EStatus Ipb_IntfReadUsb(Ipb_TIntf* ptInst, uint16_t* pu16SubNode, uint16_t* pu16Addr,
-                            uint16_t* pu16Cmd, uint16_t* pu16Data, uint16_t* u16Sz)
+                            uint16_t* pu16Cmd, uint16_t* pu16Data, uint16_t* pu16Sz)
 {
 
     if (ptInst->eState == IPB_STANDBY)
@@ -163,7 +163,7 @@ Ipb_EStatus Ipb_IntfReadUsb(Ipb_TIntf* ptInst, uint16_t* pu16SubNode, uint16_t* 
                     *pu16SubNode = Ipb_FrameGetSubNode(&ptInst->Rxfrm);
                     *pu16Addr = Ipb_FrameGetAddr(&ptInst->Rxfrm);
                     *pu16Cmd = Ipb_FrameGetCmd(&ptInst->Rxfrm);
-                    *u16Sz = Ipb_FrameGetConfigData(&ptInst->Rxfrm, pu16Data);
+                    *pu16Sz = Ipb_FrameGetConfigData(&ptInst->Rxfrm, pu16Data);
 
                     if (Ipb_FrameGetExtended(&ptInst->Rxfrm) != false)
                     {

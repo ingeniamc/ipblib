@@ -69,7 +69,7 @@ struct Ipb_TIntf
             uint16_t* pu16Cmd, uint16_t* pu16Data, uint16_t u16Sz);
     /** Read frame */
     Ipb_EStatus (*Read)(Ipb_TIntf* ptInst, uint16_t* pu16SubNode, uint16_t* pu16Addr,
-            uint16_t* pu16Cmd, uint16_t* pu16Data, uint16_t* u16Sz);
+            uint16_t* pu16Cmd, uint16_t* pu16Data, uint16_t* pu16Sz);
 };
 
 /** Initialize a High speed protocol interface */
