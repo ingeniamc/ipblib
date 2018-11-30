@@ -156,6 +156,7 @@ uint8_t Ipb_FrameGetCmd(const Ipb_TFrame* tFrame)
 uint16_t Ipb_FrameGetConfigData(const Ipb_TFrame* tFrame, uint16_t* u16Buf)
 {
     memcpy(u16Buf, &tFrame->pu16Buf[IPB_FRM_HEAD_SZ], (sizeof(tFrame->pu16Buf[0]) * IPB_FRM_CONFIG_SZ));
+
     return IPB_FRM_CONFIG_SZ;
 }
 

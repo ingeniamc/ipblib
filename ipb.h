@@ -45,7 +45,7 @@ typedef struct
     uint16_t u16Addr;
     /** Command data */
     uint16_t u16Cmd;
-    /** Message total size (bytes) */
+    /** Message total size */
     uint16_t u16Size;
     /** Pointer to data */
     uint16_t pu16Data[IPB_FRM_MAX_DATA_SZ - (IPB_FRM_HEAD_SZ + IPB_FRM_CRC_SZ)];
