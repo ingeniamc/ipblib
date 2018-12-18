@@ -133,7 +133,8 @@ Ipb_FrameGetExtended(const Ipb_TFrame* tFrame);
  *
  * @param [in] tFrame
  *      Input frame.
- * @return Configtic data
+ *
+ * @return Config data size
  */
 uint16_t
 Ipb_FrameGetConfigData(const Ipb_TFrame* tFrame, uint16_t* buf);
