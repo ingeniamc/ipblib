@@ -147,6 +147,27 @@ uint8_t Ipb_DictRead(Ipb_TMsg* pIpbMsg)
         case DIST_MAPPED_REGISTER_15_KEY:
             u8Ret = McbDict_ReadReg0AF(pIpbMsg->pu16Data, &pIpbMsg->u16Size);
             break;
+        case MONI_SOC_TRIGGER_TYPE_KEY:
+            u8Ret = McbDict_ReadReg09E(pIpbMsg->pu16Data, &pIpbMsg->u16Size);
+            break;
+        case MONI_TG_DELAY_SAMPLES_KEY:
+            u8Ret = McbDict_ReadReg09D(pIpbMsg->pu16Data, &pIpbMsg->u16Size);
+            break;
+        case MONI_WINDOW_SAMPLES_KEY:
+            u8Ret = McbDict_ReadReg09C(pIpbMsg->pu16Data, &pIpbMsg->u16Size);
+            break;
+        case MONI_RISING_EDGE_INDEX_KEY:
+            u8Ret = McbDict_ReadReg09B(pIpbMsg->pu16Data, &pIpbMsg->u16Size);
+            break;
+        case MONI_RISING_EDGE_CONDITION_KEY:
+            u8Ret = McbDict_ReadReg09A(pIpbMsg->pu16Data, &pIpbMsg->u16Size);
+            break;
+        case MONI_NMB_TG_REPETITIONS_KEY:
+            u8Ret = McbDict_ReadReg099(pIpbMsg->pu16Data, &pIpbMsg->u16Size);
+            break;
+        case MONI_EOC_TRIGGER_TYPE_KEY:
+            u8Ret = McbDict_ReadReg098(pIpbMsg->pu16Data, &pIpbMsg->u16Size);
+            break;
         default:
             u8Ret = NOT_SUPPORTED;
             break;
@@ -158,39 +179,61 @@ uint8_t Ipb_DictRead(Ipb_TMsg* pIpbMsg)
 uint8_t Ipb_DictWrite(Ipb_TMsg* pIpbMsg)
 {
     uint8_t u8Ret = NO_ERROR;
+
     switch (pIpbMsg->u16Addr)
     {
-        case MONITOR_ENABLE_KEY:
-            u8Ret = McbDict_WriteReg0F1(pIpbMsg->pu16Data, pIpbMsg->u16Size);
-            break;
-        case MONITOR_CYCLE_PERIOD_KEY:
-            u8Ret = McbDict_WriteReg0F2(pIpbMsg->pu16Data, pIpbMsg->u16Size);
-            break;
+       case MONITOR_ENABLE_KEY:
+           u8Ret = McbDict_WriteReg0F1(pIpbMsg->pu16Data, pIpbMsg->u16Size);
+           break;
+       case MONITOR_CYCLE_PERIOD_KEY:
+           u8Ret = McbDict_WriteReg0F2(pIpbMsg->pu16Data, pIpbMsg->u16Size);
+           break;
+       case MONITOR_MAP_REG_KEY:
+           u8Ret = McbDict_WriteReg0E0(pIpbMsg->pu16Data, pIpbMsg->u16Size);
+           break;
+       case MONITOR_REMOVE_LAST_REG_KEY:
+           u8Ret = McbDict_WriteReg0E1(pIpbMsg->pu16Data, pIpbMsg->u16Size);
+           break;
+       case MONITOR_REMOVE_REGS_KEY:
+           u8Ret = McbDict_WriteReg0E2(pIpbMsg->pu16Data, pIpbMsg->u16Size);
+           break;
 
-        case MONITOR_MAP_REG_KEY:
-            u8Ret = McbDict_WriteReg0E0(pIpbMsg->pu16Data, pIpbMsg->u16Size);
-            break;
-        case MONITOR_REMOVE_LAST_REG_KEY:
-            u8Ret = McbDict_WriteReg0E1(pIpbMsg->pu16Data, pIpbMsg->u16Size);
-            break;
-        case MONITOR_REMOVE_REGS_KEY:
-            u8Ret = McbDict_WriteReg0E2(pIpbMsg->pu16Data, pIpbMsg->u16Size);
-            break;
-
-        case DIST_DATA_KEY:
-            u8Ret = McbDict_WriteReg0C0(pIpbMsg->pu16Data, pIpbMsg->u16Size);
-            break;
-
-        case DIST_MAP_REG_KEY:
-            u8Ret = McbDict_WriteReg0B0(pIpbMsg->pu16Data, pIpbMsg->u16Size);
-            break;
-        case DIST_REMOVE_LAST_REG_KEY:
-            u8Ret = McbDict_WriteReg0B1(pIpbMsg->pu16Data, pIpbMsg->u16Size);
-            break;
-
-        default:
-            u8Ret = NOT_SUPPORTED;
-            break;
+       case DIST_DATA_KEY:
+           u8Ret = McbDict_WriteReg0C0(pIpbMsg->pu16Data, pIpbMsg->u16Size);
+           break;
+       case DIST_MAP_REG_KEY:
+           u8Ret = McbDict_WriteReg0B0(pIpbMsg->pu16Data, pIpbMsg->u16Size);
+           break;
+       case DIST_REMOVE_LAST_REG_KEY:
+           u8Ret = McbDict_WriteReg0B1(pIpbMsg->pu16Data, pIpbMsg->u16Size);
+           break;
+       case MONI_FORCE_SOC_KEY:
+           u8Ret = McbDict_WriteReg09F(pIpbMsg->pu16Data, pIpbMsg->u16Size);
+           break;
+       case MONI_SOC_TRIGGER_TYPE_KEY:
+           u8Ret = McbDict_WriteReg09E(pIpbMsg->pu16Data, pIpbMsg->u16Size);
+           break;
+       case MONI_TG_DELAY_SAMPLES_KEY:
+           u8Ret = McbDict_WriteReg09D(pIpbMsg->pu16Data, pIpbMsg->u16Size);
+           break;
+       case MONI_WINDOW_SAMPLES_KEY:
+           u8Ret = McbDict_WriteReg09C(pIpbMsg->pu16Data, pIpbMsg->u16Size);
+           break;
+       case MONI_RISING_EDGE_INDEX_KEY:
+           u8Ret = McbDict_WriteReg09B(pIpbMsg->pu16Data, pIpbMsg->u16Size);
+           break;
+       case MONI_RISING_EDGE_CONDITION_KEY:
+           u8Ret = McbDict_WriteReg09A(pIpbMsg->pu16Data, pIpbMsg->u16Size);
+           break;
+       case MONI_NMB_TG_REPETITIONS_KEY:
+           u8Ret = McbDict_WriteReg099(pIpbMsg->pu16Data, pIpbMsg->u16Size);
+           break;
+       case MONI_EOC_TRIGGER_TYPE_KEY:
+           u8Ret = McbDict_WriteReg098(pIpbMsg->pu16Data, pIpbMsg->u16Size);
+           break;
+       default:
+           u8Ret = NOT_SUPPORTED;
+           break;
     }
 
     return u8Ret;
