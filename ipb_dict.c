@@ -100,8 +100,8 @@ uint8_t Ipb_DictRead(Ipb_TMsg* pIpbMsg)
             u8Ret = McbDict_ReadReg0DF(pIpbMsg->pu16Data, &pIpbMsg->u16Size);
             break;
         case DIST_MAPPED_REGISTER_0_KEY:
-           u8Ret = McbDict_ReadReg0A0(pIpbMsg->pu16Data, &pIpbMsg->u16Size);
-           break;
+            u8Ret = McbDict_ReadReg0A0(pIpbMsg->pu16Data, &pIpbMsg->u16Size);
+            break;
         case DIST_MAPPED_REGISTER_1_KEY:
             u8Ret = McbDict_ReadReg0A1(pIpbMsg->pu16Data, &pIpbMsg->u16Size);
             break;
@@ -197,7 +197,6 @@ uint8_t Ipb_DictWrite(Ipb_TMsg* pIpbMsg)
        case MONITOR_REMOVE_REGS_KEY:
            u8Ret = McbDict_WriteReg0E2(pIpbMsg->pu16Data, pIpbMsg->u16Size);
            break;
-
        case DIST_DATA_KEY:
            u8Ret = McbDict_WriteReg0C0(pIpbMsg->pu16Data, pIpbMsg->u16Size);
            break;
