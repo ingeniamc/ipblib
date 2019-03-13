@@ -1,9 +1,17 @@
 /**
+<<<<<<< HEAD
  * @file dictionary.h
  * @brief Header file for the COCO dictionary.
  *
  * @author  Firmware department
  * @copyright Ingenia Motion Control (c) 2018. All rights reserved.
+=======
+ * @file ipb_dict.h
+ * @brief Header file for the COCO dictionary.
+ *
+ * @author  Firmware department
+ * @copyright Ingenia Motion Control (c) 2019. All rights reserved.
+>>>>>>> origin/develop
  */
 
 #ifndef IPB_DICT_H
@@ -26,16 +34,24 @@ typedef struct TCocoDictEntry
     uint8_t (*CocoWrite)(uint16_t* u16Data, uint16_t* u16Size);
 } TCocoDictEntry;
 
-
-
 /**
  * Function to read the value of a Ipb register
+ *
+ * @param[out] pIpbMsg
+ *  Message buffer to store the read register
+ *
+ * @retval result of the access
  */
 uint8_t
 Ipb_DictRead(Ipb_TMsg* pIpbMsg);
 
 /**
  * Function to write the value of a Ipb register
+ *
+ * @param[in] pIpbMsg
+ *  Message buffer containing register value
+ *
+ * @retval result of the access
  */
 uint8_t
 Ipb_DictWrite(Ipb_TMsg* pIpbMsg);

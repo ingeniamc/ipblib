@@ -10,7 +10,6 @@
 #include "coco_dictionary_registers.h"
 #include "ipb_dict_usr.h"
 
-
 uint8_t Ipb_DictRead(Ipb_TMsg* pIpbMsg)
 {
     uint8_t u8Ret = NO_ERROR;
