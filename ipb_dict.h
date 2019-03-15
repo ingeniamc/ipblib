@@ -1,17 +1,9 @@
 /**
-<<<<<<< HEAD
- * @file dictionary.h
- * @brief Header file for the COCO dictionary.
- *
- * @author  Firmware department
- * @copyright Ingenia Motion Control (c) 2018. All rights reserved.
-=======
  * @file ipb_dict.h
  * @brief Header file for the COCO dictionary.
  *
  * @author  Firmware department
  * @copyright Ingenia Motion Control (c) 2019. All rights reserved.
->>>>>>> origin/develop
  */
 
 #ifndef IPB_DICT_H
