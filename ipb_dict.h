@@ -13,11 +13,11 @@
 #include "ipb.h"
 
 /** No error */
-#define NO_ERROR        (uint8_t)0x00U
+#define NO_ERROR        (uint8_t)0x00
 /** Operation not supported */
-#define NOT_SUPPORTED   (uint8_t)0x01U
+#define NOT_SUPPORTED   (uint8_t)0x01
 /** Write error */
-#define WRITE_ERROR     (uint8_t)0x02U
+#define WRITE_ERROR     (uint8_t)0x02
 
 typedef struct TIpbDictEntry
 {
