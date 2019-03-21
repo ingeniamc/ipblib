@@ -13,7 +13,7 @@
 #include <stdint.h>
 #include "ipb_intf.h"
 
-#define IPB_DFLT_TIMEOUT 500
+#define IPB_DFLT_TIMEOUT (uint32_t)1000UL
 
 typedef enum
 {
