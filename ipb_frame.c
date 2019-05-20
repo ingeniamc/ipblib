@@ -83,7 +83,16 @@ int32_t Ipb_FrameCreate(Ipb_TFrame* tFrame, uint16_t u16SubNode, uint16_t u16Add
         tFrame->pu16Buf[1] = tHeader.Command.u16All;
 
         /* Copy static & extended u16Buffer (if any) */
-        if (pu16Buf != NULL)
+        if (tHeader.Command.u1Extended != false)
+        {
+            uint16_t u16SzBy = u16Sz * sizeof(uint16_t);
+            memcpy(&tFrame->pu16Buf[IPB_FRM_HEAD_SZ], (const void*)&u16SzBy,
+                   sizeof(uint16_t));
+            /* Reserved config size */
+            memset(&tFrame->pu16Buf[IPB_FRM_HEAD_SZ + (uint16_t)1U], (uint16_t)0U,
+                   (IPB_FRM_CONFIG_SZ - (uint16_t)1U));
+        }
+        else if (pu16Buf != NULL)
         {
             memcpy(&tFrame->pu16Buf[IPB_FRM_HEAD_SZ], (const void*)pu16Buf,
                    (sizeof(tFrame->pu16Buf[0]) * u16Sz));
@@ -106,10 +115,10 @@ int32_t Ipb_FrameCreate(Ipb_TFrame* tFrame, uint16_t u16SubNode, uint16_t u16Add
 
         if (u16Sz > IPB_FRM_CONFIG_SZ)
         {
-            memcpy(&tFrame->pu16Buf[tFrame->u16Sz], (const void*)(pu16Buf + IPB_FRM_CONFIG_SZ),
-                   (sizeof(tFrame->pu16Buf[0]) * (u16Sz - IPB_FRM_CONFIG_SZ)));
+            memcpy(&tFrame->pu16Buf[tFrame->u16Sz], (const void*)(pu16Buf),
+                   (sizeof(tFrame->pu16Buf[0]) * u16Sz));
 
-            tFrame->u16Sz += (u16Sz - IPB_FRM_CONFIG_SZ);
+            tFrame->u16Sz += u16Sz;
         }
 
         break;
