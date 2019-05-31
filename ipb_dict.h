@@ -32,7 +32,7 @@ typedef struct TIpbDictEntry
 typedef struct
 {
     /** Dictionary node */
-    uint16_t u16Node;
+    int16_t i16Node;
     /** Dictionary struct pointer */
     TIpbDictEntry* pIpbDict;
     /** Dictionary struct number of entries */
@@ -42,20 +42,20 @@ typedef struct
 /**
  * Init the Ipb dictionary instance
  *
- * @param[in] ptIpbDictInst
+ * @param[out] ptIpbDictInst
  *  Ipb dictionary instance pointer
- * @param[out] u16NodeInst
+ * @param[in] i16NodeInst
  *  Ipb node instance
  */
 void
-Ipb_DictInit(TIpbDictInst* ptIpbDictInst, uint16_t u16DictNodeInst);
+Ipb_DictInit(TIpbDictInst* ptIpbDictInst, int16_t i16DictNodeInst);
 
 /**
  * Function to read the value of a Ipb register
  *
  * @param[in] ptIpbDictInst
  *  Ipb dictionary instance pointer
- * @param[out] pIpbMsg
+ * @param[in/out] pIpbMsg
  *  Message buffer to store the read register
  *
  * @retval result of the access
@@ -68,7 +68,7 @@ Ipb_DictRead(TIpbDictInst* ptIpbDictInst, Ipb_TMsg* pIpbMsg);
  *
  * @param[in] ptIpbDictInst
  *  Ipb dictionary instance pointer
- * @param[in] pIpbMsg
+ * @param[in/out] pIpbMsg
  *  Message buffer containing register value
  *
  * @retval result of the access

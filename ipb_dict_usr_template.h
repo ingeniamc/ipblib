@@ -11,21 +11,33 @@
 
 #include "ipb_dict.h"
 
-#ifdef IPB_DICT_DEF
 uint8_t 
 IpbReadReg1(uint16_t* pu16Data, uint16_t* pu16DataSz);
 
-TIpbDictEntry ptIpbNode0Dict[] =
-{
-    { (uint16_t)0x0001U, &IpbReadReg1, NULL },
-};
+uint8_t
+IpbReadReg5(uint16_t* pu16Data, uint16_t* pu16DataSz);
 
-uint16_t u16IpbNode0Size = sizeof(ptIpbNode0Dict);
+uint8_t
+IpbWriteReg5(uint16_t* pu16Data, uint16_t* pu16DataSz);
 
-TIpbDictInst ptIpbDict[] =
-{
-     { (uint16_t)0U, ptIpbNode0Dict, &u16IpbNode0Size },
-};
-#endif
+extern TIpbDictEntry ptIpbNode0Dict[];
+extern uint16_t u16IpbNode0Size;
+extern TIpbDictEntry ptIpbNode5Dict[];
+extern uint16_t u16IpbNode5Size;
+
+#define DICT_IDX_0_NODE         (int16_t)0
+#define DICT_IDX_1_NODE         (int16_t)-1 /** Not used */
+#define DICT_IDX_2_NODE         (int16_t)5
+#define DICT_IDX_3_NODE         (int16_t)-1 /** Not used */
+
+#define DICT_IDX_0_DO_POITNER   (TIpbDictEntry*)ptIpbNode0Dict
+#define DICT_IDX_1_DO_POITNER   (TIpbDictEntry*)NULL
+#define DICT_IDX_2_DO_POITNER   (TIpbDictEntry*)ptIpbNode5Dict
+#define DICT_IDX_3_DO_POITNER   (TIpbDictEntry*)NULL
+
+#define DICT_IDX_0_SIZE          &u16IpbNode0Size
+#define DICT_IDX_1_SIZE          NULL
+#define DICT_IDX_2_SIZE          &u16IpbNode5Size
+#define DICT_IDX_3_SIZE          NULL
 
 #endif /* IPB_DICT_USR_TEMPLATE_H */
