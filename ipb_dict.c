@@ -7,20 +7,37 @@
  */
 
 #include "ipb_dict.h"
+
+/** User dictionary definitions */
 #include "ipb_dict_usr.h"
 
-uint8_t Ipb_DictRead(TIpbDictEntry* ptIpbDict, uint16_t u16DictSz, Ipb_TMsg* pIpbMsg)
+void Ipb_DictInit(TIpbDictInst* ptIpbDictInst, uint16_t u16DictNodeInst)
+{
+    ptIpbDictInst->u16Node = u16DictNodeInst;
+    switch (u16DictNodeInst)
+    {
+        case IPB_NODE_0:
+            ptIpbDictInst->pIpbDict = ptIpbNode0Dict;
+            ptIpbDictInst->u16DictCnt = u16IpbNode0Size;
+            break;
+        default:
+            /** Nothing */
+            break;
+    }
+}
+
+uint8_t Ipb_DictRead(TIpbDictInst* ptIpbDictInst, Ipb_TMsg* pIpbMsg)
 {
     uint8_t u8Ret = NOT_SUPPORTED;
 
     uint16_t u16Idx;
-    for (u16Idx = (uint16_t)0U; u16Idx < u16DictSz; ++u16Idx)
+    for (u16Idx = (uint16_t)0U; u16Idx < ptIpbDictInst->u16DictCnt; ++u16Idx)
     {
-        if (pIpbMsg->u16Addr == ptIpbDict[u16Idx].u16Key)
+        if (pIpbMsg->u16Addr == ptIpbDictInst->pIpbDict[u16Idx].u16Key)
         {
-            if (ptIpbDict[u16Idx].IpbRead != NULL)
+            if (ptIpbDictInst->pIpbDict[u16Idx].IpbRead != NULL)
             {
-                u8Ret = ptIpbDict[u16Idx].IpbRead(pIpbMsg->pu16Data, &pIpbMsg->u16Size);
+                u8Ret = ptIpbDictInst->pIpbDict[u16Idx].IpbRead(pIpbMsg->pu16Data, &pIpbMsg->u16Size);
             }
 
             break;
@@ -30,18 +47,18 @@ uint8_t Ipb_DictRead(TIpbDictEntry* ptIpbDict, uint16_t u16DictSz, Ipb_TMsg* pIp
     return u8Ret;
 }
 
-uint8_t Ipb_DictWrite(TIpbDictEntry* ptIpbDict, uint16_t u16DictSz, Ipb_TMsg* pIpbMsg)
+uint8_t Ipb_DictWrite(TIpbDictInst* ptIpbDictInst, Ipb_TMsg* pIpbMsg)
 {
     uint8_t u8Ret = NOT_SUPPORTED;
 
     uint16_t u16Idx;
-    for (u16Idx = (uint16_t)0U; u16Idx < u16DictSz; ++u16Idx)
+    for (u16Idx = (uint16_t)0U; u16Idx < ptIpbDictInst->u16DictCnt; ++u16Idx)
     {
-        if (pIpbMsg->u16Addr == ptIpbDict[u16Idx].u16Key)
+        if (pIpbMsg->u16Addr == ptIpbDictInst->pIpbDict[u16Idx].u16Key)
         {
-            if (ptIpbDict[u16Idx].IpbWrite != NULL)
+            if (ptIpbDictInst->pIpbDict[u16Idx].IpbWrite != NULL)
             {
-                u8Ret = ptIpbDict[u16Idx].IpbWrite(pIpbMsg->pu16Data, &pIpbMsg->u16Size);
+                u8Ret = ptIpbDictInst->pIpbDict[u16Idx].IpbWrite(pIpbMsg->pu16Data, &pIpbMsg->u16Size);
             }
 
             break;
