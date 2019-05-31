@@ -36,7 +36,7 @@ typedef struct
     /** Dictionary struct pointer */
     TIpbDictEntry* pIpbDict;
     /** Dictionary struct number of entries */
-    uint16_t u16DictCnt;
+    uint16_t* pu16DictCnt;
 } TIpbDictInst;
 
 /**
