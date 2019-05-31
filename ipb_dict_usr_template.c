@@ -7,7 +7,6 @@
  */
 
 #include "ipb_dict_usr_template.h"
-#include "ipb_dict.h"
 
 uint8_t IpbReadReg1(uint16_t* pu16Data, uint16_t* pu16DataSz)
 {

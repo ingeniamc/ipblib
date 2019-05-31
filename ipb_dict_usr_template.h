@@ -10,11 +10,8 @@
 #define IPB_DICT_USR_TEMPLATE_H
 
 #include "ipb_dict.h"
-#include <stdint.h>
 
-/** Ipb node 0 dictionary definitions */
-#define IPB_NODE_0      (uint16_t)0U
-
+#ifdef IPB_DICT_DEF
 uint8_t 
 IpbReadReg1(uint16_t* pu16Data, uint16_t* pu16DataSz);
 
@@ -24,5 +21,11 @@ TIpbDictEntry ptIpbNode0Dict[] =
 };
 
 uint16_t u16IpbNode0Size = sizeof(ptIpbNode0Dict);
+
+TIpbDictInst ptIpbDict[] =
+{
+     { (uint16_t)0U, ptIpbNode0Dict, &u16IpbNode0Size },
+};
+#endif
 
 #endif /* IPB_DICT_USR_TEMPLATE_H */
