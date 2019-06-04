@@ -7,44 +7,92 @@
  */
 
 #include "ipb_dict.h"
+
+/** User dictionary definitions */
 #include "ipb_dict_usr.h"
 
-uint8_t Ipb_DictRead(TIpbDictEntry* ptIpbDict, uint16_t u16DictSz, Ipb_TMsg* pIpbMsg)
+#include <string.h>
+
+/** Max number of dictionaries */
+#define MAX_NODES       (uint16_t)4U
+
+#if !defined(DICT_IDX_0_NODE) || !defined(DICT_IDX_0_DO_POINTER) || !defined(DICT_IDX_0_SIZE_POINTER) \
+     || !defined(DICT_IDX_1_NODE) || !defined(DICT_IDX_1_DO_POINTER) || !defined(DICT_IDX_1_SIZE_POINTER) \
+     || !defined(DICT_IDX_2_NODE) || !defined(DICT_IDX_2_DO_POINTER) || !defined(DICT_IDX_2_SIZE_POINTER) \
+     || !defined(DICT_IDX_3_NODE) || !defined(DICT_IDX_3_DO_POINTER) || !defined(DICT_IDX_3_SIZE_POINTER)
+
+    #error "Ipb dictionaries not defined"
+
+#endif
+
+/** Dictionaries instances array */
+TIpbDictInst ptIpbDict[MAX_NODES] =
+{
+     { DICT_IDX_0_NODE, DICT_IDX_0_DO_POINTER, DICT_IDX_0_SIZE_POINTER },
+     { DICT_IDX_1_NODE, DICT_IDX_1_DO_POINTER, DICT_IDX_1_SIZE_POINTER },
+     { DICT_IDX_2_NODE, DICT_IDX_2_DO_POINTER, DICT_IDX_2_SIZE_POINTER },
+     { DICT_IDX_3_NODE, DICT_IDX_3_DO_POINTER, DICT_IDX_3_SIZE_POINTER }
+};
+
+void Ipb_DictInit(TIpbDictInst* ptIpbDictInst, int16_t i16DictNodeInst)
+{
+    if (ptIpbDict != NULL)
+    {
+        for (uint16_t u16DictIdx = (uint16_t)0U;
+                u16DictIdx < MAX_NODES;
+                ++u16DictIdx)
+        {
+            if ((ptIpbDict[u16DictIdx].i16Node >= (int16_t)0)
+                && (i16DictNodeInst == ptIpbDict[u16DictIdx].i16Node))
+            {
+                memcpy((void*)ptIpbDictInst,
+                       (const void*)&ptIpbDict[u16DictIdx], sizeof(TIpbDictInst));
+                break;
+            }
+        }
+    }
+}
+
+uint8_t Ipb_DictRead(TIpbDictInst* ptIpbDictInst, Ipb_TMsg* pIpbMsg)
 {
     uint8_t u8Ret = NOT_SUPPORTED;
 
-    uint16_t u16Idx;
-    for (u16Idx = (uint16_t)0U; u16Idx < u16DictSz; ++u16Idx)
+    if (ptIpbDictInst != NULL)
     {
-        if (pIpbMsg->u16Addr == ptIpbDict[u16Idx].u16Key)
+        uint16_t u16Idx;
+        for (u16Idx = (uint16_t)0U; u16Idx < *(ptIpbDictInst->pu16DictCnt); ++u16Idx)
         {
-            if (ptIpbDict[u16Idx].IpbRead != NULL)
+            if (pIpbMsg->u16Addr == ptIpbDictInst->pIpbDict[u16Idx].u16Key)
             {
-                u8Ret = ptIpbDict[u16Idx].IpbRead(pIpbMsg->pu16Data, &pIpbMsg->u16Size);
+                if (ptIpbDictInst->pIpbDict[u16Idx].IpbRead != NULL)
+                {
+                    u8Ret = ptIpbDictInst->pIpbDict[u16Idx].IpbRead(pIpbMsg->pu16Data, &pIpbMsg->u16Size);
+                }
+                break;
             }
-
-            break;
         }
     }
 
     return u8Ret;
 }
 
-uint8_t Ipb_DictWrite(TIpbDictEntry* ptIpbDict, uint16_t u16DictSz, Ipb_TMsg* pIpbMsg)
+uint8_t Ipb_DictWrite(TIpbDictInst* ptIpbDictInst, Ipb_TMsg* pIpbMsg)
 {
     uint8_t u8Ret = NOT_SUPPORTED;
 
-    uint16_t u16Idx;
-    for (u16Idx = (uint16_t)0U; u16Idx < u16DictSz; ++u16Idx)
+    if (ptIpbDictInst != NULL)
     {
-        if (pIpbMsg->u16Addr == ptIpbDict[u16Idx].u16Key)
+        uint16_t u16Idx;
+        for (u16Idx = (uint16_t)0U; u16Idx < *(ptIpbDictInst->pu16DictCnt); ++u16Idx)
         {
-            if (ptIpbDict[u16Idx].IpbWrite != NULL)
+            if (pIpbMsg->u16Addr == ptIpbDictInst->pIpbDict[u16Idx].u16Key)
             {
-                u8Ret = ptIpbDict[u16Idx].IpbWrite(pIpbMsg->pu16Data, &pIpbMsg->u16Size);
+                if (ptIpbDictInst->pIpbDict[u16Idx].IpbWrite != NULL)
+                {
+                    u8Ret = ptIpbDictInst->pIpbDict[u16Idx].IpbWrite(pIpbMsg->pu16Data, &pIpbMsg->u16Size);
+                }
+                break;
             }
-
-            break;
         }
     }
 

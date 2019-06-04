@@ -19,6 +19,7 @@
 /** Write error */
 #define WRITE_ERROR     (uint8_t)0x02
 
+/* Dictionary entry instance */
 typedef struct TIpbDictEntry
 {
     /** Dictionary entry key value */
@@ -29,34 +30,52 @@ typedef struct TIpbDictEntry
     uint8_t (*IpbWrite)(uint16_t* u16Data, uint16_t* u16Size);
 } TIpbDictEntry;
 
+/** Dictionary instance */
+typedef struct
+{
+    /** Dictionary node */
+    int16_t i16Node;
+    /** Dictionary struct pointer */
+    TIpbDictEntry* pIpbDict;
+    /** Dictionary struct number of entries */
+    uint16_t* pu16DictCnt;
+} TIpbDictInst;
+
+/**
+ * Init the Ipb dictionary instance
+ *
+ * @param[out] ptIpbDictInst
+ *  Ipb dictionary instance pointer
+ * @param[in] i16NodeInst
+ *  Ipb node instance
+ */
+void
+Ipb_DictInit(TIpbDictInst* ptIpbDictInst, int16_t i16DictNodeInst);
+
 /**
  * Function to read the value of a Ipb register
  *
- * @param[in] ptIpbDict
- *  Ipb dictionary pointer
- * @param[in] u16DictSz
- *  Size in number of elements of the dictionary
- * @param[out] pIpbMsg
+ * @param[in] ptIpbDictInst
+ *  Ipb dictionary instance pointer
+ * @param[in/out] pIpbMsg
  *  Message buffer to store the read register
  *
  * @retval result of the access
  */
 uint8_t
-Ipb_DictRead(TIpbDictEntry* ptIpbDict, uint16_t u16DictSz, Ipb_TMsg* pIpbMsg);
+Ipb_DictRead(TIpbDictInst* ptIpbDictInst, Ipb_TMsg* pIpbMsg);
 
 /**
  * Function to write the value of a Ipb register
  *
- * @param[in] ptIpbDict
- *  Ipb dictionary pointer
- * @param[in] u16DictSz
- *  Size in number of elements of the dictionary
- * @param[in] pIpbMsg
+ * @param[in] ptIpbDictInst
+ *  Ipb dictionary instance pointer
+ * @param[in/out] pIpbMsg
  *  Message buffer containing register value
  *
  * @retval result of the access
  */
 uint8_t
-Ipb_DictWrite(TIpbDictEntry* ptIpbDict, uint16_t u16DictSz, Ipb_TMsg* pIpbMsg);
+Ipb_DictWrite(TIpbDictInst* ptIpbDictInst, Ipb_TMsg* pIpbMsg);
 
 #endif /* IPB_DICT_H */
