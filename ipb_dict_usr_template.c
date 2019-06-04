@@ -1,6 +1,6 @@
 /**
  * @file ipb_dict_usr_template.c
- * @brief This file contains the dictionary management.
+ * @brief This file contains a dictionary template.
  *
  * @author  Firmware department
  * @copyright Ingenia Motion Control (c) 2019. All rights reserved.
@@ -19,7 +19,7 @@ TIpbDictEntry ptIpbNode5Dict[] =
 {
     { (uint16_t)0x0005U, &IpbReadReg5, &IpbWriteReg5 }
 };
-
+a
 uint16_t u16IpbNode5Size = sizeof(ptIpbNode5Dict);
 
 uint8_t IpbReadReg1(uint16_t* pu16Data, uint16_t* pu16DataSz)

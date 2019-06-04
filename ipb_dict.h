@@ -19,6 +19,7 @@
 /** Write error */
 #define WRITE_ERROR     (uint8_t)0x02
 
+/* Dictionary entry instance */
 typedef struct TIpbDictEntry
 {
     /** Dictionary entry key value */
@@ -29,6 +30,7 @@ typedef struct TIpbDictEntry
     uint8_t (*IpbWrite)(uint16_t* u16Data, uint16_t* u16Size);
 } TIpbDictEntry;
 
+/** Dictionary instance */
 typedef struct
 {
     /** Dictionary node */

@@ -13,23 +13,25 @@
 
 #include <string.h>
 
+/** Max number of dictionaries */
 #define MAX_NODES       (uint16_t)4U
 
-#if !defined(DICT_IDX_0_NODE) || !defined(DICT_IDX_0_DO_POITNER) || !defined(DICT_IDX_0_SIZE) \
-     || !defined(DICT_IDX_1_NODE) || !defined(DICT_IDX_1_DO_POITNER) || !defined(DICT_IDX_1_SIZE) \
-     || !defined(DICT_IDX_2_NODE) || !defined(DICT_IDX_2_DO_POITNER) || !defined(DICT_IDX_2_SIZE) \
-     || !defined(DICT_IDX_3_NODE) || !defined(DICT_IDX_3_DO_POITNER) || !defined(DICT_IDX_3_SIZE)
+#if !defined(DICT_IDX_0_NODE) || !defined(DICT_IDX_0_DO_POINTER) || !defined(DICT_IDX_0_SIZE_POINTER) \
+     || !defined(DICT_IDX_1_NODE) || !defined(DICT_IDX_1_DO_POINTER) || !defined(DICT_IDX_1_SIZE_POINTER) \
+     || !defined(DICT_IDX_2_NODE) || !defined(DICT_IDX_2_DO_POINTER) || !defined(DICT_IDX_2_SIZE_POINTER) \
+     || !defined(DICT_IDX_3_NODE) || !defined(DICT_IDX_3_DO_POINTER) || !defined(DICT_IDX_3_SIZE_POINTER)
 
     #error "Ipb dictionaries not defined"
 
 #endif
 
+/** Dictionaries instances array */
 TIpbDictInst ptIpbDict[MAX_NODES] =
 {
-     { DICT_IDX_0_NODE, DICT_IDX_0_DO_POITNER, DICT_IDX_0_SIZE },
-     { DICT_IDX_1_NODE, DICT_IDX_1_DO_POITNER, DICT_IDX_1_SIZE },
-     { DICT_IDX_2_NODE, DICT_IDX_2_DO_POITNER, DICT_IDX_2_SIZE },
-     { DICT_IDX_3_NODE, DICT_IDX_3_DO_POITNER, DICT_IDX_3_SIZE }
+     { DICT_IDX_0_NODE, DICT_IDX_0_DO_POINTER, DICT_IDX_0_SIZE_POINTER },
+     { DICT_IDX_1_NODE, DICT_IDX_1_DO_POINTER, DICT_IDX_1_SIZE_POINTER },
+     { DICT_IDX_2_NODE, DICT_IDX_2_DO_POINTER, DICT_IDX_2_SIZE_POINTER },
+     { DICT_IDX_3_NODE, DICT_IDX_3_DO_POINTER, DICT_IDX_3_SIZE_POINTER }
 };
 
 void Ipb_DictInit(TIpbDictInst* ptIpbDictInst, int16_t i16DictNodeInst)
@@ -66,7 +68,6 @@ uint8_t Ipb_DictRead(TIpbDictInst* ptIpbDictInst, Ipb_TMsg* pIpbMsg)
                 {
                     u8Ret = ptIpbDictInst->pIpbDict[u16Idx].IpbRead(pIpbMsg->pu16Data, &pIpbMsg->u16Size);
                 }
-
                 break;
             }
         }
@@ -90,7 +91,6 @@ uint8_t Ipb_DictWrite(TIpbDictInst* ptIpbDictInst, Ipb_TMsg* pIpbMsg)
                 {
                     u8Ret = ptIpbDictInst->pIpbDict[u16Idx].IpbWrite(pIpbMsg->pu16Data, &pIpbMsg->u16Size);
                 }
-
                 break;
             }
         }
