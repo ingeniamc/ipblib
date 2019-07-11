@@ -34,6 +34,19 @@ TIpbDictInst ptIpbDict[MAX_NODES] =
      { DICT_IDX_3_NODE, DICT_IDX_3_DO_POINTER, DICT_IDX_3_SIZE_POINTER }
 };
 
+/**
+ * Function to search entry by key in an Ipb dictionary
+ *
+ * @param[in] ptIpbDictInst
+ *  Ipb dictionary instance pointer
+ * @param[in] u16Key
+ *  Ipb entry key
+ *
+ * @retval Ipb dictionary entry pointer if success, NULL otherwise
+ */
+static TIpbDictEntry*
+SearchByKey(TIpbDictInst* ptIpbDictInst, uint16_t u16Key);
+
 void Ipb_DictInit(TIpbDictInst* ptIpbDictInst, int16_t i16DictNodeInst)
 {
     if (ptIpbDict != NULL)
@@ -57,19 +70,12 @@ uint8_t Ipb_DictRead(TIpbDictInst* ptIpbDictInst, Ipb_TMsg* pIpbMsg)
 {
     uint8_t u8Ret = NOT_SUPPORTED;
 
-    if (ptIpbDictInst != NULL)
+    TIpbDictEntry* ptIpbDictEnt = SearchByKey(ptIpbDictInst, pIpbMsg->u16Addr);
+    if (ptIpbDictEnt != NULL)
     {
-        uint16_t u16Idx;
-        for (u16Idx = (uint16_t)0U; u16Idx < *(ptIpbDictInst->pu16DictCnt); ++u16Idx)
+        if (ptIpbDictEnt->IpbRead != NULL)
         {
-            if (pIpbMsg->u16Addr == ptIpbDictInst->pIpbDict[u16Idx].u16Key)
-            {
-                if (ptIpbDictInst->pIpbDict[u16Idx].IpbRead != NULL)
-                {
-                    u8Ret = ptIpbDictInst->pIpbDict[u16Idx].IpbRead(pIpbMsg->pu16Data, &pIpbMsg->u16Size);
-                }
-                break;
-            }
+            u8Ret = ptIpbDictEnt->IpbRead(pIpbMsg->pu16Data, &pIpbMsg->u16Size);
         }
     }
 
@@ -80,21 +86,51 @@ uint8_t Ipb_DictWrite(TIpbDictInst* ptIpbDictInst, Ipb_TMsg* pIpbMsg)
 {
     uint8_t u8Ret = NOT_SUPPORTED;
 
-    if (ptIpbDictInst != NULL)
+    TIpbDictEntry* ptIpbDictEnt = SearchByKey(ptIpbDictInst, pIpbMsg->u16Addr);
+    if (ptIpbDictEnt != NULL)
     {
-        uint16_t u16Idx;
-        for (u16Idx = (uint16_t)0U; u16Idx < *(ptIpbDictInst->pu16DictCnt); ++u16Idx)
+        if (ptIpbDictEnt->IpbWrite != NULL)
         {
-            if (pIpbMsg->u16Addr == ptIpbDictInst->pIpbDict[u16Idx].u16Key)
-            {
-                if (ptIpbDictInst->pIpbDict[u16Idx].IpbWrite != NULL)
-                {
-                    u8Ret = ptIpbDictInst->pIpbDict[u16Idx].IpbWrite(pIpbMsg->pu16Data, &pIpbMsg->u16Size);
-                }
-                break;
-            }
+            u8Ret = ptIpbDictEnt->IpbWrite(pIpbMsg->pu16Data, &pIpbMsg->u16Size);
         }
     }
 
     return u8Ret;
 }
+
+void* Ipb_DictReadPoint(TIpbDictInst* ptIpbDictInst, uint16_t u16Key)
+{
+    void* pRet = NULL;
+
+    TIpbDictEntry* ptIpbDictEnt = SearchByKey(ptIpbDictInst, u16Key);
+    if (ptIpbDictEnt != NULL)
+    {
+        if (ptIpbDictEnt->IpbReadPoint != NULL)
+        {
+            pRet = ptIpbDictEnt->IpbReadPoint();
+        }
+    }
+
+    return pRet;
+}
+
+static TIpbDictEntry* SearchByKey(TIpbDictInst* ptIpbDictInst, uint16_t u16Key)
+{
+    TIpbDictEntry* ptIpbDictEnt = NULL;
+
+    if (ptIpbDictInst != NULL)
+    {
+        register uint16_t u16Idx;
+        for (u16Idx = (uint16_t)0U; u16Idx < *(ptIpbDictInst->pu16DictCnt); ++u16Idx)
+        {
+            if (u16Key == ptIpbDictInst->pIpbDict[u16Idx].u16Key)
+            {
+                ptIpbDictEnt = &ptIpbDictInst->pIpbDict[u16Idx];
+                break;
+            }
+        }
+    }
+
+    return ptIpbDictEnt;
+}
+
