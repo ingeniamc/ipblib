@@ -30,6 +30,10 @@ typedef struct TIpbDictEntry
     uint8_t (*IpbWrite)(uint16_t* u16Data, uint16_t* u16Size);
     /** Get register pointer callback */
     void* (*IpbReadPoint)(void);
+    /** Nvm Address */
+    uint16_t u16NvmAddr;
+    /** Register data size in bytes */
+    uint16_t u16SzBy;
 } TIpbDictEntry;
 
 /** Dictionary instance */
