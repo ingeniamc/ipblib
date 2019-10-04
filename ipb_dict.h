@@ -32,8 +32,6 @@ typedef struct TIpbDictEntry
     void* (*IpbReadPoint)(void);
     /** Nvm Address */
     uint16_t u16NvmAddr;
-    /** Register data size in bytes */
-    uint16_t u16SzBy;
 } TIpbDictEntry;
 
 /** Dictionary instance */
