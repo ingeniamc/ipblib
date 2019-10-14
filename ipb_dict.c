@@ -114,6 +114,40 @@ void* Ipb_DictReadPoint(TIpbDictInst* ptIpbDictInst, uint16_t u16Key)
     return pRet;
 }
 
+void Ipb_DictStore(TIpbDictInst* ptIpbDictInst, void (*WriteNvmReg)(uint16_t, void*))
+{
+    register uint16_t u16Idx;
+    uint64_t u64Data = (uint64_t)0ULL;
+    uint16_t u16SizeBy = (uint16_t)0U;
+
+    for (u16Idx = (uint16_t)0U; u16Idx < *(ptIpbDictInst->pu16DictCnt); ++u16Idx)
+    {
+        if (ptIpbDictInst->pIpbDict[u16Idx].u16NvmAddr != (uint16_t)0U)
+        {
+            u64Data = (uint64_t)0ULL;
+            ptIpbDictInst->pIpbDict[u16Idx].IpbRead((uint16_t*)&u64Data, &u16SizeBy);
+            WriteNvmReg(ptIpbDictInst->pIpbDict[u16Idx].u16NvmAddr, (void*)&u64Data);
+        }
+    }
+}
+
+void Ipb_DictRestore(TIpbDictInst* ptIpbDictInst, void (*ReadNvmReg)(uint16_t, void*))
+{
+    register uint16_t u16Idx;
+    uint64_t u64Data = (uint64_t)0ULL;
+    uint16_t u16SizeBy = sizeof(uint64_t);
+
+    for (u16Idx = (uint16_t)0U; u16Idx < *(ptIpbDictInst->pu16DictCnt); ++u16Idx)
+    {
+        if (ptIpbDictInst->pIpbDict[u16Idx].u16NvmAddr != (uint16_t)0U)
+        {
+            ReadNvmReg(ptIpbDictInst->pIpbDict[u16Idx].u16NvmAddr, (void*)&u64Data);
+
+            ptIpbDictInst->pIpbDict[u16Idx].IpbWrite((uint16_t*)&u64Data, &u16SizeBy);
+        }
+    }
+}
+
 static TIpbDictEntry* SearchByKey(TIpbDictInst* ptIpbDictInst, uint16_t u16Key)
 {
     TIpbDictEntry* ptIpbDictEnt = NULL;

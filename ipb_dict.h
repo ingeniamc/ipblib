@@ -30,6 +30,8 @@ typedef struct TIpbDictEntry
     uint8_t (*IpbWrite)(uint16_t* u16Data, uint16_t* u16Size);
     /** Get register pointer callback */
     void* (*IpbReadPoint)(void);
+    /** Nvm Address */
+    uint16_t u16NvmAddr;
 } TIpbDictEntry;
 
 /** Dictionary instance */
@@ -92,5 +94,27 @@ Ipb_DictWrite(TIpbDictInst* ptIpbDictInst, Ipb_TMsg* pIpbMsg);
  */
 void*
 Ipb_DictReadPoint(TIpbDictInst* ptIpbDictInst, uint16_t u16Key);
+
+/**
+ * Store all regisers from Ipb dictionary into NVM
+ *
+ * @param[in] ptIpbDictInst
+ *  Pointer to Ipb dictionary
+ * @param[in] WriteNvmReg
+ *  Write Nvm register callback
+ */
+void
+Ipb_DictStore(TIpbDictInst* ptIpbDictInst, void (*WriteNvmReg)(uint16_t, void*));
+
+/**
+ * Restore all regisers from NVM memory
+ *
+ * @param[in] ptIpbDictInst
+ *  Pointer to Ipb dictionary
+ * @param[in] ReadNVMReg
+ *  Read Nvm register callback
+ */
+void
+Ipb_DictRestore(TIpbDictInst* ptIpbDictInst, void (*ReadNvmReg)(uint16_t, void*));
 
 #endif /* IPB_DICT_H */
