@@ -30,8 +30,12 @@ typedef struct TIpbDictEntry
     uint8_t (*IpbWrite)(uint16_t* u16Data, uint16_t* u16Size);
     /** Get register pointer callback */
     void* (*IpbReadPoint)(void);
+    /** Default Address */
+    uint16_t u16DfltAddr;
     /** Nvm Address */
     uint16_t u16NvmAddr;
+    /** Size in bytes */
+    uint16_t u16SizeBy;
 } TIpbDictEntry;
 
 /** Dictionary instance */
@@ -96,6 +100,17 @@ void*
 Ipb_DictReadPoint(TIpbDictInst* ptIpbDictInst, uint16_t u16Key);
 
 /**
+ * Load default Nvm regisers
+ *
+ * @param[in] ptIpbDictInst
+ *  Pointer to Ipb dictionary
+ * @param[in] ReadNVMReg
+ *  Read Nvm register callback
+ */
+void
+Ipb_DictLoadDflts(TIpbDictInst* ptIpbDictInst, void (*ReadNvmReg)(uint16_t, void*));
+
+/**
  * Store all regisers from Ipb dictionary into NVM
  *
  * @param[in] ptIpbDictInst
@@ -107,7 +122,7 @@ void
 Ipb_DictStore(TIpbDictInst* ptIpbDictInst, void (*WriteNvmReg)(uint16_t, void*));
 
 /**
- * Restore all regisers from NVM memory
+ * Load all regisers from NVM memory
  *
  * @param[in] ptIpbDictInst
  *  Pointer to Ipb dictionary
@@ -115,6 +130,6 @@ Ipb_DictStore(TIpbDictInst* ptIpbDictInst, void (*WriteNvmReg)(uint16_t, void*))
  *  Read Nvm register callback
  */
 void
-Ipb_DictRestore(TIpbDictInst* ptIpbDictInst, void (*ReadNvmReg)(uint16_t, void*));
+Ipb_DictLoad(TIpbDictInst* ptIpbDictInst, void (*ReadNvmReg)(uint16_t, void*));
 
 #endif /* IPB_DICT_H */
