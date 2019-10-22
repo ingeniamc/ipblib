@@ -134,7 +134,7 @@ void Ipb_DictLoadDflts(TIpbDictInst* ptIpbDictInst, void (*ReadNvmReg)(uint16_t,
             {
                 ReadNvmReg((ptIpbDictInst->pIpbDict[u16Idx].u16DfltAddr + u16BytesRead), (void*)(pu8DictNvmBuf + u16BytesRead));
                 u16BytesRead += sizeof(uint64_t);
-            } while(u16BytesRead < ptIpbDictInst->pIpbDict[u16Idx].u16SizeBy);
+            } while(u16BytesRead < (ptIpbDictInst->pIpbDict[u16Idx].u16SizeBits / BYTE_TO_BITS));
             ptIpbDictInst->pIpbDict[u16Idx].IpbWrite((uint16_t*)pu8DictNvmBuf, &u16BytesRead);
         }
 
@@ -153,9 +153,13 @@ void Ipb_DictStore(TIpbDictInst* ptIpbDictInst, void (*WriteNvmReg)(uint16_t, vo
         {
             uint16_t u16SizeBy = (uint16_t)0U;
 
-            u16SizeBy = ptIpbDictInst->pIpbDict[u16Idx].u16SizeBy;
-            ptIpbDictInst->pIpbDict[u16Idx].IpbRead((uint16_t*)pu8DictNvmBuf, &u16SizeBy);
-            WriteNvmReg(ptIpbDictInst->pIpbDict[u16Idx].u16NvmAddr, (void*)pu8DictNvmBuf);
+            u16SizeBy = (ptIpbDictInst->pIpbDict[u16Idx].u16SizeBits / BYTE_TO_BITS);
+            uint16_t u16Ret = NO_ERROR;
+            u16Ret = ptIpbDictInst->pIpbDict[u16Idx].IpbRead((uint16_t*)pu8DictNvmBuf, &u16SizeBy);
+            if (u16Ret == NO_ERROR)
+            {
+                WriteNvmReg(ptIpbDictInst->pIpbDict[u16Idx].u16NvmAddr, (void*)pu8DictNvmBuf);
+            }
         }
     }
 }
@@ -175,7 +179,7 @@ void Ipb_DictLoad(TIpbDictInst* ptIpbDictInst, void (*ReadNvmReg)(uint16_t, void
             {
                 ReadNvmReg((ptIpbDictInst->pIpbDict[u16Idx].u16NvmAddr + u16BytesRead), (void*)(pu8DictNvmBuf + u16BytesRead));
                 u16BytesRead += sizeof(uint64_t);
-            } while(u16BytesRead < ptIpbDictInst->pIpbDict[u16Idx].u16SizeBy);
+            } while(u16BytesRead < (ptIpbDictInst->pIpbDict[u16Idx].u16SizeBits / BYTE_TO_BITS));
             ptIpbDictInst->pIpbDict[u16Idx].IpbWrite((uint16_t*)pu8DictNvmBuf, &u16BytesRead);
         }
     }
