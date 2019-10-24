@@ -38,7 +38,7 @@ TIpbDictInst ptIpbDict[MAX_NODES] =
 #define DICTIONARY_NVM_BUFF_SIZE_BY         (uint16_t)64U
 
 /** Dictionary static buffer */
-uint8_t pu8DictNvmBuf[DICTIONARY_NVM_BUFF_SIZE_BY];
+static uint8_t pu8DictNvmBuf[DICTIONARY_NVM_BUFF_SIZE_BY];
 
 /**
  * Function to search entry by key in an Ipb dictionary
