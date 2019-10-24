@@ -10,7 +10,7 @@
 
 /** User dictionary definitions */
 #include "ipb_dict_usr.h"
-
+#include "utils.h"
 #include <string.h>
 
 /** Max number of dictionaries */
@@ -33,6 +33,12 @@ TIpbDictInst ptIpbDict[MAX_NODES] =
      { DICT_IDX_2_NODE, DICT_IDX_2_DO_POINTER, DICT_IDX_2_SIZE_POINTER },
      { DICT_IDX_3_NODE, DICT_IDX_3_DO_POINTER, DICT_IDX_3_SIZE_POINTER }
 };
+
+/** Dictionary nvm buffer size in bytes */
+#define DICTIONARY_NVM_BUFF_SIZE_BY         (uint16_t)64U
+
+/** Dictionary static buffer */
+static uint8_t pu8DictNvmBuf[DICTIONARY_NVM_BUFF_SIZE_BY];
 
 /**
  * Function to search entry by key in an Ipb dictionary
@@ -114,36 +120,67 @@ void* Ipb_DictReadPoint(TIpbDictInst* ptIpbDictInst, uint16_t u16Key)
     return pRet;
 }
 
-void Ipb_DictStore(TIpbDictInst* ptIpbDictInst, void (*WriteNvmReg)(uint16_t, void*))
+void Ipb_DictLoadDflts(TIpbDictInst* ptIpbDictInst, void (*ReadNvmReg)(uint16_t, void*))
 {
     register uint16_t u16Idx;
-    uint64_t u64Data = (uint64_t)0ULL;
-    uint16_t u16SizeBy = (uint16_t)0U;
 
     for (u16Idx = (uint16_t)0U; u16Idx < *(ptIpbDictInst->pu16DictCnt); ++u16Idx)
     {
-        if (ptIpbDictInst->pIpbDict[u16Idx].u16NvmAddr != (uint16_t)0U)
+        if ((ptIpbDictInst->pIpbDict[u16Idx].u16DfltAddr != (uint16_t)0U)
+            && (ptIpbDictInst->pIpbDict[u16Idx].IpbWrite != NULL))
         {
-            u64Data = (uint64_t)0ULL;
-            ptIpbDictInst->pIpbDict[u16Idx].IpbRead((uint16_t*)&u64Data, &u16SizeBy);
-            WriteNvmReg(ptIpbDictInst->pIpbDict[u16Idx].u16NvmAddr, (void*)&u64Data);
+            uint16_t u16BytesRead = (uint16_t)0U;
+            do
+            {
+                ReadNvmReg((ptIpbDictInst->pIpbDict[u16Idx].u16DfltAddr + u16BytesRead), (void*)(pu8DictNvmBuf + u16BytesRead));
+                u16BytesRead += sizeof(uint64_t);
+            } while(u16BytesRead < (ptIpbDictInst->pIpbDict[u16Idx].u16SizeBits / BYTE_TO_BITS));
+            ptIpbDictInst->pIpbDict[u16Idx].IpbWrite((uint16_t*)pu8DictNvmBuf, &u16BytesRead);
+        }
+
+
+    }
+}
+
+void Ipb_DictStore(TIpbDictInst* ptIpbDictInst, void (*WriteNvmReg)(uint16_t, void*))
+{
+    register uint16_t u16Idx;
+
+    for (u16Idx = (uint16_t)0U; u16Idx < *(ptIpbDictInst->pu16DictCnt); ++u16Idx)
+    {
+        if ((ptIpbDictInst->pIpbDict[u16Idx].u16NvmAddr != (uint16_t)0U)
+            && (ptIpbDictInst->pIpbDict[u16Idx].IpbRead != NULL))
+        {
+            uint16_t u16SizeBy = (uint16_t)0U;
+
+            u16SizeBy = (ptIpbDictInst->pIpbDict[u16Idx].u16SizeBits / BYTE_TO_BITS);
+            uint16_t u16Ret = NO_ERROR;
+            u16Ret = ptIpbDictInst->pIpbDict[u16Idx].IpbRead((uint16_t*)pu8DictNvmBuf, &u16SizeBy);
+            if (u16Ret == NO_ERROR)
+            {
+                WriteNvmReg(ptIpbDictInst->pIpbDict[u16Idx].u16NvmAddr, (void*)pu8DictNvmBuf);
+            }
         }
     }
 }
 
-void Ipb_DictRestore(TIpbDictInst* ptIpbDictInst, void (*ReadNvmReg)(uint16_t, void*))
+void Ipb_DictLoad(TIpbDictInst* ptIpbDictInst, void (*ReadNvmReg)(uint16_t, void*))
 {
     register uint16_t u16Idx;
-    uint64_t u64Data = (uint64_t)0ULL;
-    uint16_t u16SizeBy = sizeof(uint64_t);
 
     for (u16Idx = (uint16_t)0U; u16Idx < *(ptIpbDictInst->pu16DictCnt); ++u16Idx)
     {
-        if (ptIpbDictInst->pIpbDict[u16Idx].u16NvmAddr != (uint16_t)0U)
+        if ((ptIpbDictInst->pIpbDict[u16Idx].u16NvmAddr != (uint16_t)0U)
+            && (ptIpbDictInst->pIpbDict[u16Idx].IpbWrite != NULL))
         {
-            ReadNvmReg(ptIpbDictInst->pIpbDict[u16Idx].u16NvmAddr, (void*)&u64Data);
+            uint16_t u16BytesRead = (uint16_t)0U;
 
-            ptIpbDictInst->pIpbDict[u16Idx].IpbWrite((uint16_t*)&u64Data, &u16SizeBy);
+            do
+            {
+                ReadNvmReg((ptIpbDictInst->pIpbDict[u16Idx].u16NvmAddr + u16BytesRead), (void*)(pu8DictNvmBuf + u16BytesRead));
+                u16BytesRead += sizeof(uint64_t);
+            } while(u16BytesRead < (ptIpbDictInst->pIpbDict[u16Idx].u16SizeBits / BYTE_TO_BITS));
+            ptIpbDictInst->pIpbDict[u16Idx].IpbWrite((uint16_t*)pu8DictNvmBuf, &u16BytesRead);
         }
     }
 }
