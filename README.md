@@ -6,6 +6,7 @@ Communication core library implements propietary Ingenia protocol based on stand
 
 * Develop for embedded devices, from low performance MCU to powerful MPU
 * Developed in C language
+* Hardware abstract layer interface for portability simplification
 
 ## Requirements ##
 
